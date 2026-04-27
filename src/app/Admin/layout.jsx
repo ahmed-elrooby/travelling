@@ -2,6 +2,7 @@ import React from 'react'
 
 import Header from './components/Header/Header'
 import Aside from './components/Aside/Aside'
+import AdminProvider from '../Providers/AdminContext/AdminProvider'
 
 
 
@@ -9,7 +10,7 @@ const layout = ({ children }) => {
   return (
     <>
       <section className="flex h-screen transition-all duration-300">
-        {/* <AdminContext> */}
+        <AdminProvider>
           {/* <Aside /> */}
 <Aside/>
           <section className="flex flex-col flex-1 overflow-hidden">
@@ -32,7 +33,7 @@ const layout = ({ children }) => {
               </div>
             </main>
           </section>
-        {/* </AdminContext> */}
+        </AdminProvider>
       </section>
     </>
   )
