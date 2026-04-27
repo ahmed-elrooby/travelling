@@ -65,14 +65,14 @@ const Aside = () => {
         },
         {
           name: "حجوزات الفنادق",
-          href: "/bookings/hotels",
+          href: "/Admin/HotelPage",
           icon: FaHotel,
           badge: "892",
           badgeColor: "pink",
         },
         {
           name: "السيارات والتأجير",
-          href: "/bookings/cars",
+          href: "/Admin/CarsPage",
           icon: FaCar,
           badge: "156",
           badgeColor: "blue",
