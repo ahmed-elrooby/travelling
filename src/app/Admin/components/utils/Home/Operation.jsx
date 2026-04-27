@@ -31,7 +31,7 @@ const Operation = () => {
             key={index}
             className={`w-full text-right text-white p-3 rounded-xl transition flex items-center gap-3 ${
               action.primary 
-                ? "btn-gradient-premium" 
+                ?"relative overflow-hidden transition-all duration-300 ease-in-out bg-gradient-to-br from-purple-500 to-pink-500" 
                 : "bg-white/5 hover:bg-white/10"
             }`}
           >
