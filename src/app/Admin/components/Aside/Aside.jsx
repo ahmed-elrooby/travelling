@@ -90,7 +90,7 @@ const Aside = () => {
         },
         {
           name: "الوكلاء B2B",
-          href: "/users/b2b",
+          href: "/Admin/AgentsPage",
           icon: FaBuilding,
           badge: null,
         },
