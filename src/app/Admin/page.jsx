@@ -1,9 +1,9 @@
 import React from 'react'
-import Cards from './components/utils/Home/Cards'
-import Booking from './components/utils/Home/Booking'
-import Operation from './components/utils/Home/Operation'
-import RevenueChart from './components/utils/Home/RevenuesChart'
-import BookingDistribution from './components/utils/Home/BookingDistribution'
+import Cards from './components/Utils/Home/Cards'
+import Booking from './components/Utils/Home/Booking'
+import Operation from './components/Utils/Home/Operation'
+import RevenueChart from './components/Utils/Home/RevenuesChart'
+import BookingDistribution from './components/Utils/Home/BookingDistribution'
 
 const page = () => {
   return <>

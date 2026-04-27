@@ -84,7 +84,7 @@ const Aside = () => {
       items: [
         {
           name: "جميع المستخدمين",
-          href: "/users/all",
+          href: "/Admin/UsersPage",
           icon: FaUsers,
           badge: null,
         },
@@ -96,7 +96,7 @@ const Aside = () => {
         },
         {
           name: "العملاء B2C",
-          href: "/users/b2c",
+          href: "/Admin/ClientPage",
           icon: FaUserCheck,
           badge: null,
         },

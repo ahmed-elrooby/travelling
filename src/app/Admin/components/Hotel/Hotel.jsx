@@ -1,7 +1,7 @@
 import React from 'react'
-import HotelBookingsHeader from '../utils/Hotel/Header'
-import HotelStats from '../utils/Hotel/Cards'
-import HotelSearchFilter from '../utils/Hotel/Table'
+import HotelBookingsHeader from '../Utils/Hotel/Header'
+import HotelStats from '../Utils/Hotel/Cards'
+import HotelSearchFilter from '../Utils/Hotel/Table'
 
 const Hotel = () => {
   return <>
