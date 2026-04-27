@@ -78,7 +78,6 @@ export default function BookingsView() {
       day: "numeric",
     });
   };
-
   return (
     <div className="p-6  rounded-xl bg-gradient-to-br from-[#0f0c29] via-[#1a1638] to-[#0a081c]">
       {/* Header */}
