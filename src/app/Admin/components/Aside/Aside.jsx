@@ -147,7 +147,7 @@ const Aside = () => {
       <aside
         className={`
           fixed top-0 right-0 h-full
-          w-80 md:w-72 lg:w-80
+         md:w-64 lg:w-72
           bg-gradient-to-b from-gray-900 via-gray-900 to-gray-800
           shadow-2xl z-40
           flex flex-col

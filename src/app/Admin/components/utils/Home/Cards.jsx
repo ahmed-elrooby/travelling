@@ -1,66 +1,83 @@
-import React from 'react'
+"use client";
+
+import React from "react";
+import { 
+  FaCalendarCheck, 
+  FaDollarSign, 
+  FaUserPlus, 
+  FaUserFriends, 
+  FaBuilding, 
+  FaHandshake 
+} from "react-icons/fa";
+import { FaArrowUp } from "react-icons/fa6";
 
 const Cards = () => {
-  return <>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="stat-card rounded-2xl p-6 aos-init aos-animate" data-aos="fade-up" data-aos-delay="100">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p class="text-gray-400 text-sm">إجمالي الحجوزات</p>
-                        <p class="text-4xl font-bold text-white mt-2">1,284</p>
-                        <p class="text-green-400 text-xs mt-2"><i class="fas fa-arrow-up"></i> +12% عن الشهر الماضي</p>
-                    </div>
-                    <div class="icon-glow bg-gradient-to-br from-purple-500/20 to-pink-500/20 p-3 rounded-2xl">
-                        <i class="fas fa-calendar-check text-2xl text-purple-400 float-slow"></i>
-                    </div>
-                </div>
-                <div class="progress-bar h-1 w-full rounded-full mt-4"></div>
-            </div>
-            
-            <div class="stat-card rounded-2xl p-6 aos-init aos-animate" data-aos="fade-up" data-aos-delay="200">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p class="text-gray-400 text-sm">إجمالي الأرباح</p>
-                        <p class="text-4xl font-bold text-white mt-2">348.5k$</p>
-                        <p class="text-green-400 text-xs mt-2"><i class="fas fa-arrow-up"></i> +8% عن الشهر الماضي</p>
-                    </div>
-                    <div class="icon-glow bg-gradient-to-br from-green-500/20 to-emerald-500/20 p-3 rounded-2xl">
-                        <i class="fas fa-dollar-sign text-2xl text-green-400 float-slow" style="animation-delay: 0.3s;"></i>
-                    </div>
-                </div>
-                <div class="progress-bar h-1 w-3/4 rounded-full mt-4"></div>
-            </div>
-            
-            <div class="stat-card rounded-2xl p-6 aos-init aos-animate" data-aos="fade-up" data-aos-delay="300">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p class="text-gray-400 text-sm">العملاء B2C</p>
-                        <p class="text-4xl font-bold text-white mt-2">892</p>
-                        <p class="text-green-400 text-xs mt-2"><i class="fas fa-user-plus"></i> +45 جديد</p>
-                    </div>
-                    <div class="icon-glow bg-gradient-to-br from-blue-500/20 to-cyan-500/20 p-3 rounded-2xl">
-                        <i class="fas fa-user-friends text-2xl text-blue-400 float-slow" style="animation-delay: 0.6s;"></i>
-                    </div>
-                </div>
-                <div class="progress-bar h-1 w-2/3 rounded-full mt-4"></div>
-            </div>
-            
-            <div class="stat-card rounded-2xl p-6 aos-init aos-animate" data-aos="fade-up" data-aos-delay="400">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p class="text-gray-400 text-sm">الوكلاء B2B</p>
-                        <p class="text-4xl font-bold text-white mt-2">47</p>
-                        <p class="text-green-400 text-xs mt-2"><i class="fas fa-building"></i> +6 وكلاء جدد</p>
-                    </div>
-                    <div class="icon-glow bg-gradient-to-br from-yellow-500/20 to-orange-500/20 p-3 rounded-2xl">
-                        <i class="fas fa-handshake text-2xl text-yellow-400 float-slow" style="animation-delay: 0.9s;"></i>
-                    </div>
-                </div>
-                <div class="progress-bar h-1 w-1/2 rounded-full mt-4"></div>
-            </div>
-        </div>
-  
-  </>
-}
+  const stats = [
+    {
+      title: "إجمالي الحجوزات",
+      value: "1,284",
+      change: "+12% عن الشهر الماضي",
+      icon: FaCalendarCheck,
+      gradient: "from-purple-500/20 to-pink-500/20",
+      iconColor: "text-purple-400",
+      progress: "w-full",
+    },
+    {
+      title: "إجمالي الأرباح",
+      value: "348.5k$",
+      change: "+8% عن الشهر الماضي",
+      icon: FaDollarSign,
+      gradient: "from-green-500/20 to-emerald-500/20",
+      iconColor: "text-green-400",
+      progress: "w-3/4",
+    },
+    {
+      title: "العملاء B2C",
+      value: "892",
+      change: "+45 جديد",
+      icon: FaUserFriends,
+      gradient: "from-blue-500/20 to-cyan-500/20",
+      iconColor: "text-blue-400",
+      progress: "w-2/3",
+    },
+    {
+      title: "الوكلاء B2B",
+      value: "47",
+      change: "+6 وكلاء جدد",
+      icon: FaHandshake,
+      gradient: "from-yellow-500/20 to-orange-500/20",
+      iconColor: "text-yellow-400",
+      progress: "w-1/2",
+    },
+  ];
 
-export default Cards
+  return (
+    <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2 lg:grid-cols-4">
+      {stats.map((stat, index) => (
+        <div
+          key={index}
+          className="p-6 bg-gradient-to-br from-purple-500/10 to-pink-500/5 border border-[#8b5cf64d] rounded-2xl"
+          data-aos="fade-up"
+          data-aos-delay={100 * (index + 1)}
+        >
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-sm text-gray-400">{stat.title}</p>
+              <p className="mt-2 text-4xl font-bold text-white">{stat.value}</p>
+              <p className="flex items-center gap-1 mt-2 text-xs text-green-400">
+                <FaArrowUp className="text-xs" />
+                {stat.change}
+              </p>
+            </div>
+            <div className={`icon-glow bg-gradient-to-br ${stat.gradient} p-3 rounded-2xl`}>
+              <stat.icon className={`text-2xl ${stat.iconColor} float-slow`} style={{ animationDelay: `${index * 0.3}s` }} />
+            </div>
+          </div>
+          <div className={`progress-bar h-1 ${stat.progress} rounded-full mt-4`}></div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default Cards;

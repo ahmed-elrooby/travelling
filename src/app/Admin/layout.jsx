@@ -18,7 +18,8 @@ const layout = ({ children }) => {
             <main
               className={`
                 flex-1 p-4 overflow-y-auto transition-all duration-300
-                bg-gradient-to-br from-[#f5f0ea] via-[#f8f4ef] to-[#fcf9f5] text-gray-800
+                          bg-gradient-to-b from-gray-900 via-gray-900 to-gray-800
+ text-gray-800
                 md:p-2
               `}
             >
