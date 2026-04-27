@@ -46,7 +46,7 @@ const Aside = () => {
       items: [
         {
           name: "لوحة التحكم",
-          href: "/",
+          href: "/Admin",
           icon: FaTachometerAlt,
           icon2: FaChartLine,
           badge: null,
@@ -58,7 +58,7 @@ const Aside = () => {
       items: [
         {
           name: "حجوزات الطيران",
-          href: "/bookings/flights",
+          href: "/Admin/BookingPage",
           icon: FaPlane,
           badge: "1.2k",
           badgeColor: "purple",
