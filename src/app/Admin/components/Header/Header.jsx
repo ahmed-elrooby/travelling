@@ -44,9 +44,7 @@ const Header = ({ userName = "أحمد", userEmail = "admin@travel.com" }) => {
     <>
       <div
         className={` px-4 md:px-6 py-2 lg:px-8 transform transition-all  bg-gradient-to-b from-gray-900 via-gray-900 to-gray-800
- duration-700 ease-out ${
-          mounted ? "translate-y-0 opacity-100" : "-translate-y-10 opacity-0"
-        }`}
+ duration-700 ease-out  shadow-lg `}
       >
         <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
           
@@ -83,7 +81,7 @@ const Header = ({ userName = "أحمد", userEmail = "admin@travel.com" }) => {
             </button>
 
             {/* User Dropdown */}
-            <div className="relative" ref={dropdownRef}>
+            <div  ref={dropdownRef}>
               <button
                 onClick={() => setOpenDropdown(!openDropdown)}
                 className={`flex items-center gap-2 p-1 transition-all duration-300 rounded-xl bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border hover:border-purple-500 hover:shadow-lg hover:shadow-purple-500/20 group ${
@@ -160,34 +158,7 @@ const Header = ({ userName = "أحمد", userEmail = "admin@travel.com" }) => {
         </div>
       </div>
 
-      {/* Animations */}
-      <style jsx>{`
-        @keyframes gradient {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-        
-        @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        .animate-gradient {
-          background-size: 200% auto;
-          animation: gradient 3s linear infinite;
-        }
-        
-        .animate-slideDown {
-          animation: slideDown 0.2s ease-out;
-        }
-      `}</style>
+
     </>
   );
 };
