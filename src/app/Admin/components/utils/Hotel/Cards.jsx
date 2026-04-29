@@ -1,5 +1,7 @@
 "use client";
 
+import { Admin } from "@/app/Providers/AdminContext/AdminProvider";
+import { useContext } from "react";
 import {
   FaHotel,
   FaDollarSign,
@@ -8,19 +10,21 @@ import {
 } from "react-icons/fa";
 
 export default function HotelStats() {
+  const { Hotel } = useContext(Admin);
+
+  const kpis = Hotel?.data?.kpis;
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       
       {/* Card 1 */}
-      <div
-        className="rounded-2xl p-5 bg-white/5 backdrop-blur-md border border-white/10"
-        data-aos="fade-up"
-        data-aos-delay="100"
-      >
+      <div className="rounded-2xl p-5 bg-white/5 backdrop-blur-md border border-white/10 hover:scale-[1.02] transition">
         <div className="flex justify-between items-center">
           <div>
             <p className="text-gray-400 text-sm">إجمالي حجوزات الفنادق</p>
-            <p className="text-3xl font-bold text-white mt-1">892</p>
+            <p className="text-3xl font-bold text-white mt-1">
+              {kpis?.totalHotelBookings ?? 0}
+            </p>
           </div>
 
           <div className="bg-pink-500/20 p-3 rounded-xl">
@@ -30,15 +34,13 @@ export default function HotelStats() {
       </div>
 
       {/* Card 2 */}
-      <div
-        className="rounded-2xl p-5 bg-white/5 backdrop-blur-md border border-white/10"
-        data-aos="fade-up"
-        data-aos-delay="200"
-      >
+      <div className="rounded-2xl p-5 bg-white/5 backdrop-blur-md border border-white/10 hover:scale-[1.02] transition">
         <div className="flex justify-between items-center">
           <div>
             <p className="text-gray-400 text-sm">إيرادات الفنادق</p>
-            <p className="text-3xl font-bold text-white mt-1">276k$</p>
+            <p className="text-3xl font-bold text-white mt-1">
+              {kpis?.hotelRevenue ?? 0}$
+            </p>
           </div>
 
           <div className="bg-green-500/20 p-3 rounded-xl">
@@ -48,15 +50,13 @@ export default function HotelStats() {
       </div>
 
       {/* Card 3 */}
-      <div
-        className="rounded-2xl p-5 bg-white/5 backdrop-blur-md border border-white/10"
-        data-aos="fade-up"
-        data-aos-delay="300"
-      >
+      <div className="rounded-2xl p-5 bg-white/5 backdrop-blur-md border border-white/10 hover:scale-[1.02] transition">
         <div className="flex justify-between items-center">
           <div>
             <p className="text-gray-400 text-sm">متوسط الإشغال</p>
-            <p className="text-3xl font-bold text-white mt-1">74%</p>
+            <p className="text-3xl font-bold text-white mt-1">
+              {kpis?.avgOccupancy ?? 0}%
+            </p>
           </div>
 
           <div className="bg-yellow-500/20 p-3 rounded-xl">
@@ -66,15 +66,13 @@ export default function HotelStats() {
       </div>
 
       {/* Card 4 */}
-      <div
-        className="rounded-2xl p-5 bg-white/5 backdrop-blur-md border border-white/10"
-        data-aos="fade-up"
-        data-aos-delay="400"
-      >
+      <div className="rounded-2xl p-5 bg-white/5 backdrop-blur-md border border-white/10 hover:scale-[1.02] transition">
         <div className="flex justify-between items-center">
           <div>
             <p className="text-gray-400 text-sm">شركاء الفنادق</p>
-            <p className="text-3xl font-bold text-white mt-1">48</p>
+            <p className="text-3xl font-bold text-white mt-1">
+              {kpis?.hotelPartners ?? 0}
+            </p>
           </div>
 
           <div className="bg-purple-500/20 p-3 rounded-xl">

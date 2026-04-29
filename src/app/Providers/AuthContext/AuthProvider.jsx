@@ -1,12 +1,218 @@
-import React, { createContext } from 'react'
-export const Auth = createContext()
+"use client";
 
-const AuthProvider = ({children}) => {
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useMemo,
+} from "react";
+
+import axios from "axios";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import * as Yup from "yup";
+
+export const Auth = createContext();
+
+const AuthProvider = ({ children }) => {
+  const router = useRouter();
+  const baseURL = process.env.NEXT_PUBLIC_API;
+
+  const [loading, setLoading] = useState(false);
+
+  /* ================== FORM ================== */
+  const initialValues = {
+    email: "",
+    password: "",
+  };
+
+  const loginValidation = Yup.object({
+    email: Yup.string().required("البريد الإلكتروني مطلوب"),
+    password: Yup.string().required("كلمة المرور مطلوبة"),
+  });
+
+  /* ================== AXIOS INSTANCE ================== */
+  const axiosInstance = useMemo(() => {
+    return axios.create({
+      baseURL,
+    });
+  }, [baseURL]);
+
+  /* ================== LOGOUT ================== */
+  const logout = () => {
+    Cookies.remove("accessToken");
+    Cookies.remove("refreshToken");
+    router.push("/login");
+  };
+
+  /* ================== INTERCEPTORS ================== */
+  useEffect(() => {
+    // ===== Request Interceptor =====
+    const requestInterceptor = axiosInstance.interceptors.request.use(
+      (config) => {
+        const token = Cookies.get("accessToken");
+
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+
+    // ===== Response Interceptor =====
+    const responseInterceptor = axiosInstance.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const originalRequest = error.config;
+
+        if (!originalRequest) return Promise.reject(error);
+
+        // منع loop refresh
+        if (originalRequest.url?.includes("/auth/refresh")) {
+          logout();
+          return Promise.reject(error);
+        }
+
+        if (
+          error.response?.status === 401 &&
+          !originalRequest._retry
+        ) {
+          originalRequest._retry = true;
+
+          const refreshToken = Cookies.get("refreshToken");
+
+          if (!refreshToken) {
+            logout();
+            return Promise.reject(error);
+          }
+
+          try {
+            // 💥 refresh request (BODY + correct API format)
+            const { data } = await axiosInstance.post(
+              "/auth/refresh",
+              {
+                refreshToken,
+              }
+            );
+
+            // 💥 دعم كل أشكال الـ response
+            const newAccessToken =
+              data?.data?.accessToken || data?.accessToken;
+
+            const newRefreshToken =
+              data?.data?.refreshToken || data?.refreshToken;
+
+            if (!newAccessToken) {
+              throw new Error("Refresh failed: no access token");
+            }
+
+            // 💥 update cookies
+            Cookies.set("accessToken", newAccessToken);
+
+            if (newRefreshToken) {
+              Cookies.set("refreshToken", newRefreshToken);
+            }
+
+            // 💥 update axios default header
+            axiosInstance.defaults.headers.Authorization =
+              `Bearer ${newAccessToken}`;
+
+            // 💥 retry original request
+            originalRequest.headers.Authorization =
+              `Bearer ${newAccessToken}`;
+
+            return axiosInstance(originalRequest);
+          } catch (err) {
+            logout();
+            return Promise.reject(err);
+          }
+        }
+
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      axiosInstance.interceptors.request.eject(requestInterceptor);
+      axiosInstance.interceptors.response.eject(responseInterceptor);
+    };
+  }, [axiosInstance]);
+
+  /* ================== LOGIN ================== */
+  const loginRequest = async (values) => {
+    setLoading(true);
+
+    try {
+      const { data } = await axiosInstance.post(
+        "/auth/login",
+        values,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      return data;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLoginMutation = useMutation({
+    mutationKey: ["login"],
+    mutationFn: loginRequest,
+
+    onSuccess: (data) => {
+      toast.success("تم تسجيل الدخول بنجاح");
+
+      const accessToken = data?.data?.accessToken;
+      const refreshToken = data?.data?.refreshToken;
+
+      Cookies.set("accessToken", accessToken);
+      Cookies.set("refreshToken", refreshToken);
+
+      const role = data?.data?.user?.role;
+
+      if (role === "admin") {
+        router.push("/Admin");
+      } else {
+        router.push("/");
+      }
+    },
+
+    onError: (err) => {
+      toast.error(
+        err?.response?.data?.message ||
+          "فشل تسجيل الدخول"
+      );
+    },
+  });
+
+  const handleLoginFun = (values, helpers) => {
+    handleLoginMutation.mutate(values, {
+      onSettled: () => helpers?.setSubmitting(false),
+    });
+  };
+
+  /* ================== CONTEXT ================== */
   return (
-    <Auth.Provider >
+    <Auth.Provider
+      value={{
+        handleLoginFun,
+        loginValidation,
+        initialValues,
+        loading,
+        axiosInstance,
+      }}
+    >
       {children}
     </Auth.Provider>
-  )
-}
+  );
+};
 
-export default AuthProvider
+export default AuthProvider;

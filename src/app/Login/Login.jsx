@@ -1,18 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Link from "next/link";
 import { useFormik, Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FiMail, FiLock, FiEye, FiEyeOff, FiLogIn } from "react-icons/fi";
+import AuthProvider, { Auth } from "../Providers/AuthContext/AuthProvider";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-
+  const {handleLoginFun} = useContext(Auth);
   const initialValues = {
     email: "",
     password: "",
-    rememberMe: false,
   };
 
   const validationSchema = Yup.object({
@@ -24,9 +24,6 @@ const Login = () => {
       .required("كلمة المرور مطلوبة"),
   });
 
-  const onSubmit = (values) => {
-    console.log("Login data:", values);
-  };
 
   return (
     <div className="flex items-center justify-center min-h-screen p-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -46,7 +43,7 @@ const Login = () => {
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
-            onSubmit={onSubmit}
+            onSubmit={handleLoginFun}
           >
             {({ values, handleChange }) => (
               <Form className="space-y-6">
@@ -111,15 +108,7 @@ const Login = () => {
                   />
                 </div>
 
-                {/* Remember */}
-                <label className="flex items-center">
-                  <Field
-                    type="checkbox"
-                    name="rememberMe"
-                    className="w-4 h-4"
-                  />
-                  <span className="mr-2 text-sm text-gray-400">تذكرني</span>
-                </label>
+              
 
                 {/* Submit */}
                 <button
