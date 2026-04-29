@@ -2,8 +2,9 @@
 import React, { createContext } from 'react'
 export const Agent = createContext()
 const AgentProvider = ({children}) => {
+  const ddd = "ddd"
   return (
-    <Agent.Provider >
+    <Agent.Provider value={{ddd}}>
       {children}
     </Agent.Provider>
   )

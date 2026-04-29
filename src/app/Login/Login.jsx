@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Link from "next/link";
 import { useFormik, Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FiMail, FiLock, FiEye, FiEyeOff, FiLogIn } from "react-icons/fi";
+import { Auth } from "../Providers/AuthContext/AuthProvider";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -12,7 +13,7 @@ const Login = () => {
   const initialValues = {
     email: "",
     password: "",
-    rememberMe: false,
+  
   };
 
   const validationSchema = Yup.object({
@@ -24,9 +25,7 @@ const Login = () => {
       .required("كلمة المرور مطلوبة"),
   });
 
-  const onSubmit = (values) => {
-    console.log("Login data:", values);
-  };
+
 
   return (
     <div className="flex items-center justify-center min-h-screen p-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -46,7 +45,9 @@ const Login = () => {
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
-            onSubmit={onSubmit}
+            onSubmit={()=>{
+              console.log("kkkk")
+            }}
           >
             {({ values, handleChange }) => (
               <Form className="space-y-6">
@@ -64,7 +65,7 @@ const Login = () => {
                       type="email"
                       name="email"
                       placeholder="أدخل بريدك الإلكتروني"
-                      className="w-full py-3 pl-4 pr-12 text-white bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-purple-500"
+                      className="w-full py-3 pl-4 pr-12 text-white border bg-white/5 border-white/10 rounded-xl focus:outline-none focus:border-purple-500"
                     />
                   </div>
 
@@ -88,7 +89,7 @@ const Login = () => {
                       type={showPassword ? "text" : "password"}
                       name="password"
                       placeholder="أدخل كلمة المرور"
-                      className="w-full py-3 pl-12 pr-12 text-white bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-purple-500"
+                      className="w-full py-3 pl-12 pr-12 text-white border bg-white/5 border-white/10 rounded-xl focus:outline-none focus:border-purple-500"
                     />
 
                     <button
@@ -111,15 +112,6 @@ const Login = () => {
                   />
                 </div>
 
-                {/* Remember */}
-                <label className="flex items-center">
-                  <Field
-                    type="checkbox"
-                    name="rememberMe"
-                    className="w-4 h-4"
-                  />
-                  <span className="mr-2 text-sm text-gray-400">تذكرني</span>
-                </label>
 
                 {/* Submit */}
                 <button
@@ -133,12 +125,7 @@ const Login = () => {
           </Formik>
 
           {/* Links */}
-          <div className="mt-6 text-center text-gray-400">
-            ليس لديك حساب؟{" "}
-            <Link href="/register" className="text-purple-400">
-              إنشاء حساب
-            </Link>
-          </div>
+          
         </div>
       </div>
     </div>
