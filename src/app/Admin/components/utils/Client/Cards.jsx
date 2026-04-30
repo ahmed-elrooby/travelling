@@ -1,8 +1,12 @@
 "use client";
 
+import { Admin } from "@/app/Providers/AdminContext/AdminProvider";
+import { useContext } from "react";
 import { FaUsers, FaChartLine, FaUserPlus, FaCoins } from "react-icons/fa";
 
 export default function CustomersStats() {
+  const {B2C} = useContext(Admin)
+  console.log(B2C )
   const stats = [
     {
       title: "إجمالي العملاء",
