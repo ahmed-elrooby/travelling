@@ -1,222 +1,335 @@
 "use client";
 
-import { useState } from "react";
-import { FaList, FaPlane, FaHotel, FaUmbrellaBeach, FaCheckCircle, FaClock, FaTimesCircle } from "react-icons/fa";
+import { useState, useContext } from "react";
+import {
+  FaList,
+  FaPlane,
+  FaCheckCircle,
+  FaClock,
+  FaTimesCircle,
+  FaExchangeAlt,
+  FaCalendarAlt,
+  FaUsers,
+  FaDollarSign,
+  FaEye,
+  FaPrint,
+  FaDownload,
+} from "react-icons/fa";
 import { IoGridOutline } from "react-icons/io5";
-
-const bookingsData = [
-  {
-    id: 1,
-    name: "أحمد عيد",
-    type: "Hotel",
-    typeAr: "فندق",
-    date: "2026-04-27",
-    status: "Confirmed",
-    statusAr: "مؤكد",
-    price: 2500,
-    icon: <FaHotel className="text-pink-400" />,
-  },
-  {
-    id: 2,
-    name: "سارة علي",
-    type: "Flight",
-    typeAr: "طيران",
-    date: "2026-04-28",
-    status: "Pending",
-    statusAr: "قيد الانتظار",
-    price: 4800,
-    icon: <FaPlane className="text-purple-400" />,
-  },
-  {
-    id: 3,
-    name: "عمر حسن",
-    type: "Tour",
-    typeAr: "جولة سياحية",
-    date: "2026-04-29",
-    status: "Cancelled",
-    statusAr: "ملغي",
-    price: 1200,
-    icon: <FaUmbrellaBeach className="text-blue-400" />,
-  },
-];
-
-const getStatusStyles = (status) => {
-  switch (status) {
-    case "Confirmed":
-      return "bg-green-500/20 text-green-400 border border-green-500/30";
-    case "Pending":
-      return "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30";
-    case "Cancelled":
-      return "bg-red-500/20 text-red-400 border border-red-500/30";
-    default:
-      return "bg-gray-500/20 text-gray-400 border border-gray-500/30";
-  }
-};
-
-const getStatusIcon = (status) => {
-  switch (status) {
-    case "Confirmed":
-      return <FaCheckCircle className="ml-1 text-xs" />;
-    case "Pending":
-      return <FaClock className="ml-1 text-xs" />;
-    case "Cancelled":
-      return <FaTimesCircle className="ml-1 text-xs" />;
-    default:
-      return null;
-  }
-};
+import { MdFlightTakeoff, MdFlightLand } from "react-icons/md";
+import { Admin } from "@/app/Providers/AdminContext/AdminProvider";
 
 export default function BookingsView() {
   const [view, setView] = useState("table");
+  const [selectedStatus, setSelectedStatus] = useState("all");
 
-  // تنسيق التاريخ
-  const formatDate = (dateStr) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString("ar-EG", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+  const { flights } = useContext(Admin);
+  console.log(flights);
+
+  const bookings = flights?.data?.recentBookings;
+
+  if (!bookings) return null;
+
+  const statuses = [
+    { id: "all", label: "الكل", count: bookings.length },
+    { id: "confirmed", label: "مؤكد", count: bookings.filter(b => b.status === "confirmed").length },
+    { id: "pending", label: "قيد الانتظار", count: bookings.filter(b => b.status === "pending").length },
+    { id: "cancelled", label: "ملغي", count: bookings.filter(b => b.status === "cancelled").length },
+  ];
+
+  const getStatusStyles = (status) => {
+    switch (status) {
+      case "confirmed":
+        return "bg-green-500/20 text-green-400 border-green-500/30";
+      case "pending":
+        return "bg-yellow-500/20 text-yellow-400 border-yellow-500/30";
+      case "cancelled":
+        return "bg-red-500/20 text-red-400 border-red-500/30";
+      default:
+        return "bg-gray-500/20 text-gray-400 border-gray-500/30";
+    }
   };
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case "confirmed":
+        return <FaCheckCircle className="ml-1 text-xs" />;
+      case "pending":
+        return <FaClock className="ml-1 text-xs" />;
+      case "cancelled":
+        return <FaTimesCircle className="ml-1 text-xs" />;
+      default:
+        return null;
+    }
+  };
+
+  const getStatusText = (status) => {
+    switch (status) {
+      case "confirmed":
+        return "مؤكد";
+      case "pending":
+        return "قيد الانتظار";
+      case "cancelled":
+        return "ملغي";
+      default:
+        return status;
+    }
+  };
+
+  const formatTime = (time) => {
+    return time;
+  };
+
+  const filteredBookings = selectedStatus === "all" 
+    ? bookings 
+    : bookings.filter(b => b.status === selectedStatus);
+
   return (
-    <div className="p-6  rounded-xl bg-gradient-to-br from-[#0f0c29] via-[#1a1638] to-[#0a081c]">
+    <div className="w-full p-4 rounded-2xl sm:p-6 bg-gradient-to-br from-[#0f0c29] to-[#1a1638] border border-white/10">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-white">حجوزاتي</h2>
+      <div className="flex flex-col gap-4 mb-6 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-lg font-bold text-white sm:text-2xl">
+            ✈️ حجوزات الطيران
+          </h2>
+          <p className="mt-1 text-sm text-gray-400">
+            إدارة ومتابعة جميع حجوزات رحلات الطيران
+          </p>
+        </div>
 
         <div className="flex gap-2">
           <button
             onClick={() => setView("table")}
-            className={`p-2.5 rounded-xl transition-all duration-300 ${
+            className={`p-2.5 rounded-lg transition-all duration-300 ${
               view === "table"
-                ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30"
-                : "bg-white/10 text-gray-400 hover:bg-white/20 hover:text-white"
+                ? "bg-purple-500 text-white shadow-lg shadow-purple-500/30"
+                : "bg-white/10 text-gray-400 hover:bg-white/20"
             }`}
           >
-            <FaList size={18} />
+            <FaList size={16} />
           </button>
 
           <button
             onClick={() => setView("cards")}
-            className={`p-2.5 rounded-xl transition-all duration-300 ${
+            className={`p-2.5 rounded-lg transition-all duration-300 ${
               view === "cards"
-                ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30"
-                : "bg-white/10 text-gray-400 hover:bg-white/20 hover:text-white"
+                ? "bg-purple-500 text-white shadow-lg shadow-purple-500/30"
+                : "bg-white/10 text-gray-400 hover:bg-white/20"
             }`}
           >
-            <IoGridOutline size={18} />
+            <IoGridOutline size={16} />
+          </button>
+
+          <button className="p-2.5 rounded-lg transition-all duration-300 bg-white/10 text-gray-400 hover:bg-white/20">
+            <FaDownload size={16} />
           </button>
         </div>
       </div>
 
+      {/* Status Filters */}
+      <div className="flex flex-wrap gap-2 mb-6">
+        {statuses.map((status) => (
+          <button
+            key={status.id}
+            onClick={() => setSelectedStatus(status.id)}
+            className={`px-3 py-1.5 rounded-lg text-sm transition-all duration-300 ${
+              selectedStatus === status.id
+                ? "bg-purple-500/20 text-purple-400 border border-purple-500/30"
+                : "text-gray-400 hover:bg-white/5"
+            }`}
+          >
+            {status.label}
+            <span className="mr-1 text-xs">({status.count})</span>
+          </button>
+        ))}
+      </div>
+
       {/* TABLE VIEW */}
       {view === "table" && (
-        <div className="overflow-x-auto border rounded-2xl bg-white/5 backdrop-blur-sm border-purple-500/20">
-          <table className="w-full">
-            <thead className="bg-purple-500/10">
-              <tr>
-                <th className="p-4 font-semibold text-right text-gray-300">العميل</th>
-                <th className="p-4 font-semibold text-right text-gray-300">نوع الحجز</th>
-                <th className="p-4 font-semibold text-right text-gray-300">التاريخ</th>
-                <th className="p-4 font-semibold text-right text-gray-300">الحالة</th>
-                <th className="p-4 font-semibold text-right text-gray-300">السعر</th>
-              </tr>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[800px] text-right">
+            <thead className="text-sm text-gray-300 bg-white/5">
+              <tr className="border-b border-white/10">
+                <th className="p-3 rounded-tr-2xl">الخطوط</th>
+                <th className="p-3">الرحلة</th>
+                <th className="p-3">من → إلى</th>
+                <th className="p-3">وقت المغادرة</th>
+                <th className="p-3">وقت الوصول</th>
+                <th className="p-3">السعر</th>
+                <th className="p-3 rounded-tl-2xl">الحالة</th>
+               </tr>
             </thead>
 
-            <tbody>
-              {bookingsData.map((b, idx) => (
+            <tbody className="text-sm text-gray-300">
+              {filteredBookings.map((b, index) => (
                 <tr
                   key={b.id}
-                  className={`border-t border-purple-500/20 transition-all duration-200 hover:bg-purple-500/10 ${
-                    idx !== bookingsData.length - 1 ? "border-b" : ""
-                  }`}
+                  className="transition-all duration-300 border-b border-white/5 hover:bg-white/5 group"
+                  style={{ animationDelay: `${index * 50}ms` }}
                 >
-                  <td className="p-4 font-medium text-white">{b.name}</td>
-                  <td className="p-4">
+                  <td className="p-3 font-medium text-white">
                     <div className="flex items-center gap-2">
-                      {b.icon}
-                      <span className="text-gray-300">{b.typeAr}</span>
+                      <FaPlane className="text-purple-400" />
+                      {b.airline}
                     </div>
-                  </td>
-                  <td className="p-4 text-gray-400">{formatDate(b.date)}</td>
-                  <td className="p-4">
+                   </td>
+
+                  <td className="p-3">
+                    <span className="px-2 py-1 font-mono text-xs rounded-lg bg-white/10">
+                      {b.flightNo}
+                    </span>
+                   </td>
+
+                  <td className="p-3">
+                    <div className="flex items-center gap-2">
+                      <MdFlightTakeoff className="text-purple-400" />
+                      <span>{b.from}</span>
+                      <FaExchangeAlt className="text-xs text-gray-500" />
+                      <MdFlightLand className="text-green-400" />
+                      <span>{b.to}</span>
+                    </div>
+                   </td>
+
+                  <td className="p-3 text-gray-400">
+                    {formatTime(b.departureTime)}
+                   </td>
+
+                  <td className="p-3 text-gray-400">
+                    {formatTime(b.arrivalTime)}
+                   </td>
+
+                  <td className="p-3">
+                    <span className="font-bold text-white">${b.price}</span>
+                   </td>
+
+                  <td className="p-3">
                     <span
-                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs ${getStatusStyles(
+                      className={`flex w-fit items-center gap-1 px-3 py-1 text-xs font-medium rounded-full border ${getStatusStyles(
                         b.status
                       )}`}
                     >
                       {getStatusIcon(b.status)}
-                      {b.statusAr}
+                      {getStatusText(b.status)}
                     </span>
-                  </td>
-                  <td className="p-4">
-                    <span className="font-semibold text-white">
-                      {b.price.toLocaleString()} EGP
-                    </span>
-                  </td>
+                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+
+          {filteredBookings.length === 0 && (
+            <div className="py-12 text-center">
+              <div className="mb-4 text-6xl">✈️</div>
+              <p className="text-gray-400">لا توجد حجوزات</p>
+              <p className="mt-1 text-sm text-gray-500">
+                لا توجد حجوزات تطابق المعايير المحددة
+              </p>
+            </div>
+          )}
         </div>
       )}
 
       {/* CARDS VIEW */}
       {view === "cards" && (
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {bookingsData.map((b) => (
+          {filteredBookings.map((b) => (
             <div
               key={b.id}
-              className="p-5 transition-all duration-300 border group rounded-2xl bg-white/5 backdrop-blur-sm border-purple-500/20 hover:border-purple-500/50 hover:shadow-xl hover:shadow-purple-500/20 hover:-translate-y-1"
+              className="relative p-5 overflow-hidden transition-all duration-500 border cursor-pointer group rounded-2xl bg-gradient-to-br from-white/5 to-transparent border-white/10 hover:border-purple-500/40 hover:scale-105 hover:shadow-2xl"
             >
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center justify-center w-12 h-12 transition-transform rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 group-hover:scale-110">
-                  {b.icon}
-                </div>
-                <span
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs ${getStatusStyles(
-                    b.status
-                  )}`}
-                >
-                  {getStatusIcon(b.status)}
-                  {b.statusAr}
-                </span>
-              </div>
+              {/* Animated Background */}
+              <div className="absolute inset-0 transition-opacity duration-700 opacity-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 group-hover:opacity-100"></div>
 
-              <h3 className="mb-1 text-xl font-bold text-white">{b.name}</h3>
-              <p className="mb-3 text-sm text-gray-400">{b.typeAr}</p>
+              <div className="relative">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="p-2 rounded-lg bg-purple-500/20">
+                      <FaPlane className="text-purple-400" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-white">{b.airline}</h3>
+                      <p className="text-xs text-gray-500">{b.flightNo}</p>
+                    </div>
+                  </div>
 
-              <div className="pt-3 space-y-2 border-t border-purple-500/20">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-400">📅 التاريخ</span>
-                  <span className="text-sm text-white">{formatDate(b.date)}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-400">💰 السعر</span>
-                  <span className="text-lg font-bold text-white">
-                    {b.price.toLocaleString()} EGP
+                  <span
+                    className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full border ${getStatusStyles(
+                      b.status
+                    )}`}
+                  >
+                    {getStatusIcon(b.status)}
+                    {getStatusText(b.status)}
                   </span>
                 </div>
-              </div>
 
-              <button className="w-full py-2 mt-4 text-sm font-medium text-white transition-all duration-300 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 hover:shadow-lg hover:shadow-purple-500/50">
-                تفاصيل الحجز
-              </button>
+                {/* Flight Route */}
+                <div className="p-3 mb-4 rounded-lg bg-white/5">
+                  <div className="flex items-center justify-between">
+                    <div className="text-center">
+                      <p className="text-lg font-bold text-white">{b.from}</p>
+                      <p className="text-xs text-gray-500">
+                        {formatTime(b.departureTime)}
+                      </p>
+                    </div>
+                    <div className="flex-1 mx-4">
+                      <div className="relative">
+                        <div className="border-t border-gray-600 border-dashed"></div>
+                        <FaPlane className="absolute text-xs text-purple-400 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" />
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-lg font-bold text-white">{b.to}</p>
+                      <p className="text-xs text-gray-500">
+                        {formatTime(b.arrivalTime)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Details */}
+                <div className="mb-4 space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-400">رقم الرحلة:</span>
+                    <span className="text-gray-300">{b.flightNo}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-400">السعر:</span>
+                    <span className="text-lg font-bold text-white">
+                      ${b.price}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-400">مدة الرحلة:</span>
+                    <span className="text-gray-300">ساعتان</span>
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div className="flex items-center justify-between pt-3 border-t border-white/10">
+                  <div className="flex gap-1">
+                    <span className="px-2 py-1 text-xs text-gray-400 rounded-lg bg-white/5">
+                      {b.class || "درجة السياحة"}
+                    </span>
+                  </div>
+                  <button className="flex items-center gap-1 px-3 py-1.5 text-sm text-purple-400 transition-all duration-300 rounded-lg hover:bg-purple-500/20">
+                    <FaEye />
+                    <span>عرض</span>
+                  </button>
+                </div>
+              </div>
             </div>
           ))}
-        </div>
-      )}
 
-      {/* حالة عدم وجود بيانات */}
-      {bookingsData.length === 0 && (
-        <div className="py-16 text-center">
-          <div className="flex items-center justify-center w-20 h-20 mx-auto mb-4 rounded-full bg-white/10">
-            <FaList className="text-4xl text-gray-500" />
-          </div>
-          <p className="text-lg text-gray-400">لا توجد حجوزات حالياً</p>
-          <button className="px-6 py-2 mt-4 text-white rounded-xl bg-gradient-to-r from-purple-500 to-pink-500">
-            حجز رحلة جديدة
-          </button>
+          {filteredBookings.length === 0 && (
+            <div className="py-12 text-center col-span-full">
+              <div className="mb-4 text-6xl">✈️</div>
+              <p className="text-gray-400">لا توجد حجوزات</p>
+              <p className="mt-1 text-sm text-gray-500">
+                لا توجد حجوزات تطابق المعايير المحددة
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>

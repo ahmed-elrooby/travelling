@@ -1,102 +1,116 @@
 "use client";
 
-import React from "react";
-import Image from "next/image";
+import React, { useContext } from "react";
 import { FaPlane, FaArrowLeft } from "react-icons/fa";
+import { Admin } from "@/app/Providers/AdminContext/AdminProvider";
 
 const Booking = () => {
-  const bookings = [
-    {
-      name: "محمد علي",
-      initials: "MA",
-      color: "8b5cf6",
-      route: "جدة ← القاهرة",
-      date: "2025-05-20",
-      price: "320$",
-      status: "مؤكد",
-      statusColor: "green",
-    },
-    {
-      name: "سارة أحمد",
-      initials: "SA",
-      color: "ec4899",
-      route: "دبي ← لندن",
-      date: "2025-05-22",
-      price: "850$",
-      status: "قيد الانتظار",
-      statusColor: "yellow",
-    },
-    {
-      name: "خالد يوسف",
-      initials: "KY",
-      color: "ef4444",
-      route: "الرياض ← اسطنبول",
-      date: "2025-05-25",
-      price: "410$",
-      status: "تم الإصدار",
-      statusColor: "blue",
-    },
-    {
-      name: "نورة خالد",
-      initials: "NK",
-      color: "10b981",
-      route: "القاهرة ← نيويورك",
-      date: "2025-06-01",
-      price: "1,250$",
-      status: "مؤكد",
-      statusColor: "green",
-    },
-  ];
+  const { overview } = useContext(Admin);
 
-  const getStatusStyles = (color) => {
-    const colors = {
-      green: "bg-green-500/20 text-green-400 border-green-500/30",
-      yellow: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-      blue: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-    };
-    return colors[color] || colors.green;
+  const bookings = overview?.data?.recentFlightBookings;
+
+  if (!bookings) return null;
+
+  const getStatusStyles = (status) => {
+    const s = status?.toLowerCase();
+
+    if (s?.includes("مؤكد"))
+      return "bg-green-500/20 text-green-400 border-green-500/30";
+
+    if (s?.includes("انتظار"))
+      return "bg-yellow-500/20 text-yellow-400 border-yellow-500/30";
+
+    if (s?.includes("تم"))
+      return "bg-blue-500/20 text-blue-400 border-blue-500/30";
+
+    return "bg-gray-500/20 text-gray-300 border-gray-500/30";
   };
 
   return (
-    <div className="overflow-hidden  lg:col-span-2 bg-[#0f0c2999] border border-[#8b5cf633] rounded-2xl">
-      <div className="flex items-center justify-between px-6 py-4 border-b border-purple-500/20">
-        <h3 className="flex items-center text-lg font-bold text-white">
+    <div
+      className="
+        overflow-hidden 
+        lg:col-span-2 
+        bg-gradient-to-br from-[#0f0c29]/80 to-[#1a1a2e]/80
+        backdrop-blur-md
+        border border-white/10 
+        rounded-2xl
+      "
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-white/10">
+        <h3 className="flex items-center text-sm sm:text-lg font-bold text-white">
           <FaPlane className="ml-2 text-purple-400" />
           أحدث حجوزات الطيران
         </h3>
-        <a href="#" className="flex items-center gap-1 text-sm text-purple-400 transition hover:text-pink-400">
+
+        <a
+          href="#"
+          className="flex items-center gap-1 text-xs sm:text-sm text-purple-400 hover:text-pink-400 transition"
+        >
           عرض الكل <FaArrowLeft className="text-xs" />
         </a>
       </div>
+
+      {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full text-right">
-          <thead className="text-sm text-gray-300 bg-purple-500/10">
+        <table className="w-full text-right min-w-[600px]">
+          <thead className="text-xs sm:text-sm text-gray-300 bg-white/5">
             <tr>
-              <th className="px-6 py-3">العميل</th>
-              <th className="px-6 py-3">الرحلة</th>
-              <th className="px-6 py-3">التاريخ</th>
-              <th className="px-6 py-3">السعر</th>
-              <th className="px-6 py-3">الحالة</th>
+              <th className="px-4 sm:px-6 py-3">العميل</th>
+              <th className="px-4 sm:px-6 py-3">الرحلة</th>
+              <th className="px-4 sm:px-6 py-3">التاريخ</th>
+              <th className="px-4 sm:px-6 py-3">السعر</th>
+              <th className="px-4 sm:px-6 py-3">الحالة</th>
             </tr>
           </thead>
-          <tbody className="text-sm text-gray-300">
-            {bookings.map((booking, index) => (
-              <tr key={index} className="table-premium-row">
-                <td className="px-6 py-3">
+
+          <tbody className="text-xs sm:text-sm text-gray-300">
+            {bookings.map((booking) => (
+              <tr
+                key={booking.id}
+                className="
+                  border-b border-white/5 
+                  hover:bg-white/5 
+                  transition
+                "
+              >
+                {/* Customer */}
+                <td className="px-4 sm:px-6 py-3">
                   <div className="flex items-center gap-3">
                     <img
-                      src={`https://ui-avatars.com/api/?name=${booking.initials}&background=${booking.color}&color=fff&size=32&rounded=true`}
-                      alt={booking.name}
+                      src={`https://ui-avatars.com/api/?name=${booking.customer}&background=8b5cf6&color=fff`}
+                      alt={booking.customer}
                       className="w-8 h-8 rounded-full"
                     />
-                    <span>{booking.name}</span>
+                    <span className="truncate max-w-[120px]">
+                      {booking.customer}
+                    </span>
                   </div>
                 </td>
-                <td className="px-6 py-3">{booking.route}</td>
-                <td className="px-6 py-3">{booking.date}</td>
-                <td className="px-6 py-3 font-semibold text-white">{booking.price}</td>
-                <td className="px-6 py-3">
-                  <span className={`badge-glow px-3 py-1 rounded-full text-xs border ${getStatusStyles(booking.statusColor)}`}>
+
+                {/* Route */}
+                <td className="px-4 sm:px-6 py-3 text-gray-300">
+                  {booking.route}
+                </td>
+
+                {/* Date */}
+                <td className="px-4 sm:px-6 py-3 text-gray-400">
+                  {booking.date}
+                </td>
+
+                {/* Price */}
+                <td className="px-4 sm:px-6 py-3 font-semibold text-white">
+                  ${booking.price}
+                </td>
+
+                {/* Status */}
+                <td className="px-4 sm:px-6 py-3">
+                  <span
+                    className={`px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs border ${getStatusStyles(
+                      booking.status
+                    )}`}
+                  >
                     {booking.status}
                   </span>
                 </td>

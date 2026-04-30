@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "./Providers/AuthContext/AuthProvider";
 import QueryProvider from "./Providers/QueryProvider/Query";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,14 +24,13 @@ export default function RootLayout({ children }) {
     <html lang="ar" dir="rtl" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
         <QueryProvider>
-
-        
-        <AuthProvider>
-{children}
+ <AuthProvider>
+          {children}
         </AuthProvider>
         </QueryProvider>
-        
-      </body>
+       
+        <Toaster/>
+        </body>
     </html>
   );
 }

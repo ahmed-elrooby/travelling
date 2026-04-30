@@ -1,7 +1,11 @@
-import React from 'react'
+"use client"
+import { Admin } from '@/app/Providers/AdminContext/AdminProvider'
+import React, { useContext } from 'react'
 import { FiBriefcase, FiTrendingUp, FiDollarSign, FiPercent } from 'react-icons/fi'
 
 const Cards = () => {
+const {B2B}=useContext(Admin)
+console.log(B2B)
   const stats = [
     {
       title: "إجمالي الوكلاء",

@@ -15,3 +15,4 @@ const QueryProvider = ({ children }) => {
   );
 };
 export default QueryProvider;
+

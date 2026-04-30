@@ -5,15 +5,14 @@ import Link from "next/link";
 import { useFormik, Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FiMail, FiLock, FiEye, FiEyeOff, FiLogIn } from "react-icons/fi";
-import { Auth } from "../Providers/AuthContext/AuthProvider";
+import AuthProvider, { Auth } from "../Providers/AuthContext/AuthProvider";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-
+  const {handleLoginFun} = useContext(Auth);
   const initialValues = {
     email: "",
     password: "",
-  
   };
 
   const validationSchema = Yup.object({
@@ -24,7 +23,6 @@ const Login = () => {
       .min(6, "كلمة المرور يجب أن تكون 6 أحرف على الأقل")
       .required("كلمة المرور مطلوبة"),
   });
-
 
 
   return (
@@ -45,9 +43,7 @@ const Login = () => {
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
-            onSubmit={()=>{
-              console.log("kkkk")
-            }}
+            onSubmit={handleLoginFun}
           >
             {({ values, handleChange }) => (
               <Form className="space-y-6">
@@ -112,6 +108,7 @@ const Login = () => {
                   />
                 </div>
 
+              
 
                 {/* Submit */}
                 <button
