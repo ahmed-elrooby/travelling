@@ -134,8 +134,27 @@ const {data:B2B} = useQuery({
   queryFn:getB2B
 })
 
+//B2C
+const getB2C = async () => {
+  try {
+    const {data} = await axios.get(`${baseurl}/dashboard/admin/b2c`,{
+      headers:{
+        Authorization:`Bearer ${Cookies.get("accessToken")}`
+      }
+    })
+    return data
+  } catch (error) {
+    throw error
+  }
+}
+
+const {data:B2C} = useQuery({
+  queryKey:["B2C"],
+queryFn:getB2C
+})
+
   return (
-    <Admin.Provider value={{overview, flights, Hotel, Cars, Users, B2B}} >
+    <Admin.Provider value={{overview, flights, Hotel, Cars, Users, B2B, B2C}} >
       {children}
     </Admin.Provider>
   )
