@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -16,10 +16,13 @@ import {
 import { FaChartLine } from "react-icons/fa6";
 import { GiCommercialAirplane } from "react-icons/gi";
 import { FiMenu, FiX } from "react-icons/fi";
+import { Auth } from "@/app/Providers/AuthContext/AuthProvider";
 
 const Aside = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+    const {profile,handleLogoutFun}=useContext(Auth)
+
 
   const navItems = [
     {
@@ -219,10 +222,10 @@ const Aside = () => {
               className="w-10 h-10 rounded-full ring-2 ring-purple-500"
             />
             <div className="flex-1">
-              <p className="text-sm font-semibold text-white">أحمد المدير</p>
-              <p className="text-xs text-gray-400">admin@travel.com</p>
+              <p className="text-sm font-semibold text-white">{profile.name}</p>
+              <p className="text-xs text-gray-400">{profile?.email}</p>
             </div>
-            <button className="p-2 rounded-lg hover:bg-red-500/10">
+            <button onClick={handleLogoutFun} className="p-2 rounded-lg hover:bg-red-500/10">
               <FaSignOutAlt className="text-gray-400 hover:text-red-400" />
             </button>
           </div>

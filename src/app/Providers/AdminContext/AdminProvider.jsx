@@ -1,10 +1,7 @@
 "use client";
 import axios from 'axios';
 import React, { createContext, useState } from 'react'
-import React, { createContext, useState } from 'react'
 import Cookies from "js-cookie"
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
@@ -199,7 +196,7 @@ const handleAddHotelMutation =useMutation({
   onSuccess:(data)=>{
     toast.success(data?.message)
     setOpenHotels(false)
-    HotelQuery.invalidateQueries(["Hotel"])
+    HotelQuery.invalidateQueries(["Hotel","BookingsHotels"])
   },
   onError:(err)=>{
     console.log(err)
