@@ -222,7 +222,7 @@ const Aside = () => {
               className="w-10 h-10 rounded-full ring-2 ring-purple-500"
             />
             <div className="flex-1">
-              <p className="text-sm font-semibold text-white">{profile.name}</p>
+              <p className="text-sm font-semibold text-white">{profile?.name}</p>
               <p className="text-xs text-gray-400">{profile?.email}</p>
             </div>
             <button onClick={handleLogoutFun} className="p-2 rounded-lg hover:bg-red-500/10">

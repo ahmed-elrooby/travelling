@@ -1,278 +1,320 @@
 "use client";
-
 import { Admin } from "@/app/Providers/AdminContext/AdminProvider";
-import React, { useContext, useEffect, useState } from "react";
-import {
-  FaBuilding,
-  FaEnvelope,
-  FaPhone,
-  FaEye,
-  FaEdit,
-  FaTrashAlt,
-  FaPlus,
-  FaSearch,
-  FaList,
-  FaThLarge,
-  FaChevronRight,
-  FaChevronLeft,
-  FaCheckCircle,
-  FaTimesCircle,
-} from "react-icons/fa";
+import React, { useContext, useState, useEffect } from "react";
+import { FaUsers, FaChartLine, FaCalendarAlt } from "react-icons/fa";
 
-export default function AgentsTable() {
-  const { B2B } = useContext(Admin);
-
-  const data = B2B?.data;
-  const kpis = data?.kpis;
-
-  const [view, setView] = useState("cards");
-  const [agents, setAgents] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+const Table = () => {
+  const { User } = useContext(Admin);
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [viewMode, setViewMode] = useState("table");
+  const [animateItems, setAnimateItems] = useState(false);
   const itemsPerPage = 6;
 
-  // ✅ ربط الداتا
+  // تصفية المستخدمين الذين role = b2c
+  const b2cUsers = User?.data?.filter((user) => user.role === "b2b") || [];
+  
+  const totalPages = Math.ceil(b2cUsers.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentUsers = b2cUsers.slice(startIndex, endIndex);
+
+  // تأثير حركة للعناصر
   useEffect(() => {
-    if (data?.topAgencies) {
-      setAgents(data.topAgencies);
-    }
-  }, [data]);
+    setAnimateItems(true);
+    const timer = setTimeout(() => setAnimateItems(false), 500);
+    return () => clearTimeout(timer);
+  }, [currentPage, viewMode]);
 
-  // ✅ فلترة
-  const filteredAgents = agents.filter((agent) =>
-    (agent.name || agent.agencyName || "")
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  );
-
-  // ✅ pagination
-  const totalPages = Math.ceil(filteredAgents.length / itemsPerPage);
-  const paginatedAgents = filteredAgents.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  // ✅ stats من API
-  const stats = {
-    totalAgents: kpis?.totalAgencies ?? 0,
-    totalRevenue: kpis?.totalRevenue ?? 0,
-    totalCommission: kpis?.totalCommission ?? 0,
-    avgCommissionRate: kpis?.avgCommissionRate ?? 0,
+  const goToPage = (page) => {
+    setCurrentPage(Math.max(1, Math.min(page, totalPages)));
   };
 
-  // ✅ status
-  const getStatusBadge = (status) => {
-    switch (status) {
-      case "active":
-        return (
-          <span className="px-2 py-1 text-xs text-green-400 rounded-full bg-green-500/20">
-            <FaCheckCircle className="inline mr-1" /> نشط
-          </span>
-        );
-      default:
-        return (
-          <span className="px-2 py-1 text-xs text-gray-400 rounded-full bg-gray-500/20">
-            <FaTimesCircle className="inline mr-1" /> غير نشط
-          </span>
-        );
-    }
-  };
-
-  // ✅ loading
-  if (!data) {
-    return (
-      <div className="text-center text-white p-10">Loading...</div>
-    );
-  }
+  // إحصائيات
+  const activeCount = b2cUsers.filter(u => u.status === "active").length;
+  const inactiveCount = b2cUsers.filter(u => u.status !== "active").length;
 
   return (
-    <div className="min-h-screen p-6 bg-gradient-to-br from-[#0f0c29] via-[#1a1638] to-[#0a081c]">
-
-      {/* Header */}
-      <div className="flex justify-between mb-6">
-        <div>
-          <h1 className="text-3xl font-bold text-white">الوكلاء B2B</h1>
-          <p className="text-gray-400">إدارة الوكلاء</p>
-        </div>
-
-        <button className="flex items-center gap-2 px-4 py-2 text-white rounded-xl bg-gradient-to-r from-purple-500 to-pink-500">
-          <FaPlus /> إضافة
-        </button>
-      </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="p-4 rounded-xl bg-white/5">
-          <p className="text-gray-400">إجمالي الوكلاء</p>
-          <p className="text-white text-2xl font-bold">
-            {stats.totalAgents}
-          </p>
-        </div>
-
-        <div className="p-4 rounded-xl bg-white/5">
-          <p className="text-gray-400">الإيرادات</p>
-          <p className="text-green-400 text-2xl font-bold">
-            {stats.totalRevenue}$
-          </p>
-        </div>
-
-        <div className="p-4 rounded-xl bg-white/5">
-          <p className="text-gray-400">العمولات</p>
-          <p className="text-yellow-400 text-2xl font-bold">
-            {stats.totalCommission}$
-          </p>
-        </div>
-
-        <div className="p-4 rounded-xl bg-white/5">
-          <p className="text-gray-400">متوسط العمولة</p>
-          <p className="text-purple-400 text-2xl font-bold">
-            {stats.avgCommissionRate}%
-          </p>
-        </div>
-      </div>
-
-      {/* Search + View */}
-      <div className="flex gap-4 mb-6">
-        <div className="relative w-full">
-          <FaSearch className="absolute right-3 top-3 text-gray-400" />
-          <input
-            type="text"
-            placeholder="بحث..."
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="w-full px-4 py-2 pr-10 text-white bg-white/5 rounded-xl"
-          />
-        </div>
-
-        <button onClick={() => setView("cards")}>
-          <FaThLarge />
-        </button>
-
-        <button onClick={() => setView("table")}>
-          <FaList />
-        </button>
-      </div>
-
-      {/* Cards */}
-      {view === "cards" ? (
-        <div className="grid md:grid-cols-3 gap-5">
-          {paginatedAgents.map((agent, i) => (
-            <div
-              key={i}
-              className="p-5 rounded-xl bg-white/5 border border-white/10"
-            >
-              <h3 className="text-white font-bold text-lg">
-                {agent.name || agent.agencyName}
-              </h3>
-
-              <p className="text-gray-400 text-sm">
-                <FaEnvelope className="inline mr-1" />
-                {agent.email || "-"}
-              </p>
-
-              <p className="text-gray-400 text-sm">
-                <FaPhone className="inline mr-1" />
-                {agent.phone || "-"}
-              </p>
-
-              <div className="mt-4 flex justify-between">
-                <div>
-                  <p className="text-gray-400 text-xs">الإيراد</p>
-                  <p className="text-white font-bold">
-                    {(agent.revenue || 0).toLocaleString()}$
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-gray-400 text-xs">العمولة</p>
-                  <p className="text-green-400 font-bold">
-                    {agent.commissionRate || 0}%
-                  </p>
-                </div>
+    <div className="min-h-screen p-4 md:p-6 lg:p-8 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900" >
+      <div className="mx-auto max-w-7xl">
+        
+        {/* بطاقات الإحصائيات */}
+        <div className="grid grid-cols-1 gap-4 mb-8 sm:grid-cols-3">
+          <div className="p-6 transition-all duration-300 transform border rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-md border-purple-500/30 hover:scale-105 hover:shadow-xl">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-purple-300">إجمالي العملاء</p>
+                <p className="mt-2 text-3xl font-bold text-white">{b2cUsers.length}</p>
               </div>
-
-              <div className="mt-3">
-                {getStatusBadge(agent.status)}
+              <FaUsers className="text-4xl text-purple-400" />
+            </div>
+          </div>
+          
+          <div className="p-6 transition-all duration-300 transform border rounded-2xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 backdrop-blur-md border-green-500/30 hover:scale-105 hover:shadow-xl">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-green-300">نشطون</p>
+                <p className="mt-2 text-3xl font-bold text-white">{activeCount}</p>
               </div>
+              <FaChartLine className="text-4xl text-green-400" />
+            </div>
+          </div>
+          
+          <div className="p-6 transition-all duration-300 transform border rounded-2xl bg-gradient-to-br from-gray-500/20 to-gray-700/20 backdrop-blur-md border-gray-500/30 hover:scale-105 hover:shadow-xl">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-300">غير نشطون</p>
+                <p className="mt-2 text-3xl font-bold text-white">{inactiveCount}</p>
+              </div>
+              <FaCalendarAlt className="text-4xl text-gray-400" />
+            </div>
+          </div>
+        </div>
 
-              <div className="flex gap-2 mt-4">
-                <button className="flex-1 bg-purple-500/20 p-2 rounded">
-                  <FaEye />
+        {/* الجدول الرئيسي */}
+        <div className="overflow-hidden transition-all duration-300 border rounded-2xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border-white/20 hover:shadow-2xl">
+          
+          {/* Header */}
+          <div className="p-4 border-b border-white/10 sm:p-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h1 className="text-2xl font-bold text-white bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text sm:text-3xl">
+                  🎯 عملاء B2B
+                </h1>
+                <p className="mt-1 text-sm text-gray-400">إدارة العملاء والتحكم في حساباتهم</p>
+              </div>
+              
+              {/* Switch View Mode */}
+              <div className="flex gap-2 p-1 rounded-lg bg-white/10 backdrop-blur-sm">
+                <button
+                  onClick={() => setViewMode("table")}
+                  className={`px-4 py-2 rounded-md transition-all duration-300 ${
+                    viewMode === "table"
+                      ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
+                      : "text-gray-300 hover:bg-white/20"
+                  }`}
+                >
+                  📊 جدول
                 </button>
-                <button className="bg-green-500/20 p-2 rounded">
-                  <FaEdit />
-                </button>
-                <button className="bg-red-500/20 p-2 rounded">
-                  <FaTrashAlt />
+                <button
+                  onClick={() => setViewMode("grid")}
+                  className={`px-4 py-2 rounded-md transition-all duration-300 ${
+                    viewMode === "grid"
+                      ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
+                      : "text-gray-300 hover:bg-white/20"
+                  }`}
+                >
+                  🎴 جريد
                 </button>
               </div>
             </div>
-          ))}
+          </div>
+
+          {/* Table View */}
+          {viewMode === "table" && (
+            <div className="overflow-x-auto">
+              <table className="w-full text-right">
+                <thead className="border-b bg-gradient-to-r from-purple-600/20 to-pink-600/20 border-white/10">
+                  <tr>
+                    <th className="px-4 py-4 text-sm font-medium text-purple-200 sm:px-6">المعرف</th>
+                    <th className="px-4 py-4 text-sm font-medium text-purple-200 sm:px-6">الاسم</th>
+                    <th className="px-4 py-4 text-sm font-medium text-purple-200 sm:px-6">البريد الإلكتروني</th>
+                    <th className="px-4 py-4 text-sm font-medium text-purple-200 sm:px-6">الدور</th>
+                    <th className="px-4 py-4 text-sm font-medium text-purple-200 sm:px-6">الحالة</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentUsers.length > 0 ? (
+                    currentUsers.map((user, index) => (
+                      <tr
+                        key={user.id}
+                        className={`border-b border-white/5 transition-all duration-300 hover:bg-white/10 ${
+                          animateItems ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
+                        }`}
+                        style={{ transitionDelay: `${index * 50}ms` }}
+                      >
+                        <td className="px-4 py-4 text-sm text-gray-300 sm:px-6">
+                          <span className="font-mono text-xs">{user.id.slice(-8)}</span>
+                        </td>
+                        <td className="px-4 py-4 font-semibold text-white sm:px-6">{user.name}</td>
+                        <td className="px-4 py-4 text-sm text-gray-300 sm:px-6">{user.email}</td>
+                        <td className="px-4 py-4 sm:px-6">
+                          <span className={`
+                            inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium
+                            ${user.role === "b2c" ? "bg-green-500/30 text-green-300 border border-green-500/50" : ""}
+                            ${user.role === "admin" ? "bg-red-500/30 text-red-300 border border-red-500/50" : ""}
+                            ${user.role === "b2b" ? "bg-blue-500/30 text-blue-300 border border-blue-500/50" : ""}
+                          `}>
+                            <span className="w-1.5 h-1.5 rounded-full bg-current"></span>
+                            {user.role === "admin" ? "مدير" : user.role === "b2b" ? "وكيل B2B" : "عميل B2C"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4 sm:px-6">
+                          <span
+                            className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                              user.status === "active"
+                                ? "bg-green-500/30 text-green-300 border border-green-500/50"
+                                : "bg-gray-500/30 text-gray-300 border border-gray-500/50"
+                            }`}
+                          >
+                            <span className={`w-1.5 h-1.5 rounded-full ${user.status === "active" ? "bg-green-400 animate-pulse" : "bg-gray-400"}`}></span>
+                            {user.status === "active" ? "نشط" : "غير نشط"}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="5" className="py-16 text-center text-gray-400">
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="text-5xl">👥</div>
+                          <p>لا يوجد عملاء B2C</p>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+               </table>
+            </div>
+          )}
+
+          {/* Grid View */}
+          {viewMode === "grid" && (
+            <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2 lg:grid-cols-3">
+              {currentUsers.length > 0 ? (
+                currentUsers.map((user, index) => (
+                  <div
+                    key={user.id}
+                    className={`group p-6 transition-all duration-500 rounded-xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-md border border-white/20 hover:border-purple-500/50 hover:shadow-2xl hover:scale-105 ${
+                      animateItems ? "opacity-0 scale-95" : "opacity-100 scale-100"
+                    }`}
+                    style={{ transitionDelay: `${index * 100}ms` }}
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="relative">
+                        <div className="absolute inset-0 transition rounded-full opacity-50 bg-gradient-to-r from-purple-500 to-pink-500 blur-md group-hover:opacity-100"></div>
+                        <div className="relative flex items-center justify-center text-xl font-bold text-white rounded-full shadow-lg w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600">
+                          {user.name.charAt(0)}
+                        </div>
+                      </div>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                          user.status === "active"
+                            ? "bg-green-500/30 text-green-300 border border-green-500/50"
+                            : "bg-gray-500/30 text-gray-300 border border-gray-500/50"
+                        }`}
+                      >
+                        {user.status === "active" ? "🟢 نشط" : "⚫ غير نشط"}
+                      </span>
+                    </div>
+                    
+                    <h3 className="mb-2 text-xl font-bold text-white transition group-hover:text-purple-300">
+                      {user.name}
+                    </h3>
+                    
+                    <p className="mb-2 text-sm text-gray-300 break-all">
+                      📧 {user.email}
+                    </p>
+                    
+                    <p className="mb-4 font-mono text-xs text-gray-400">
+                      🆔 {user.id}
+                    </p>
+                    
+                    <div className="pt-4 mt-2 border-t border-white/10">
+                      <span className={`
+                        inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full
+                        ${user.role === "b2c" ? "bg-green-500/30 text-green-300" : ""}
+                        ${user.role === "admin" ? "bg-red-500/30 text-red-300" : ""}
+                        ${user.role === "b2b" ? "bg-blue-500/30 text-blue-300" : ""}
+                      `}>
+                        {user.role === "admin" ? "👑 مدير" : user.role === "b2b" ? "🏢 وكيل B2B" : "👤 عميل B2C"}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="py-16 text-center text-gray-400 col-span-full">
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="text-5xl">👥</div>
+                    <p>لا يوجد عملاء B2C</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Pagination */}
+          {b2cUsers.length > 0 && (
+            <div className="p-4 border-t border-white/10 sm:p-6">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="order-2 text-sm text-gray-400 sm:order-1">
+                  عرض <span className="font-semibold text-white">{startIndex + 1}</span> -{" "}
+                  <span className="font-semibold text-white">{Math.min(endIndex, b2cUsers.length)}</span> من{" "}
+                  <span className="font-semibold text-white">{b2cUsers.length}</span> مستخدم
+                </div>
+                
+                <div className="flex order-1 gap-2 sm:order-2">
+                  <button
+                    onClick={() => goToPage(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className={`px-4 py-2 rounded-lg transition-all duration-300 ${
+                      currentPage === 1
+                        ? "bg-white/5 text-gray-500 cursor-not-allowed"
+                        : "bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:shadow-lg hover:scale-105"
+                    }`}
+                  >
+                    → السابق
+                  </button>
+                  
+                  <div className="flex gap-1">
+                    {[...Array(totalPages)].map((_, idx) => {
+                      const pageNum = idx + 1;
+                      if (
+                        pageNum === 1 ||
+                        pageNum === totalPages ||
+                        (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)
+                      ) {
+                        return (
+                          <button
+                            key={pageNum}
+                            onClick={() => goToPage(pageNum)}
+                            className={`w-10 h-10 rounded-lg transition-all duration-300 ${
+                              currentPage === pageNum
+                                ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg scale-110"
+                                : "bg-white/10 text-gray-300 hover:bg-white/20 hover:scale-105"
+                            }`}
+                          >
+                            {pageNum}
+                          </button>
+                        );
+                      } else if (
+                        (pageNum === currentPage - 2 && currentPage > 3) ||
+                        (pageNum === currentPage + 2 && currentPage < totalPages - 2)
+                      ) {
+                        return <span key={pageNum} className="w-10 h-10 leading-10 text-center text-gray-400">...</span>;
+                      }
+                      return null;
+                    })}
+                  </div>
+
+                  <button
+                    onClick={() => goToPage(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className={`px-4 py-2 rounded-lg transition-all duration-300 ${
+                      currentPage === totalPages
+                        ? "bg-white/5 text-gray-500 cursor-not-allowed"
+                        : "bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:shadow-lg hover:scale-105"
+                    }`}
+                  >
+                    التالي ←
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      ) : (
-        <div className="overflow-x-auto bg-white/5 rounded-xl">
-          <table className="w-full text-right">
-            <thead>
-              <tr className="text-gray-400">
-                <th className="p-3">الاسم</th>
-                <th>الإيراد</th>
-                <th>العمولة</th>
-                <th>الحالة</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {paginatedAgents.map((agent, i) => (
-                <tr key={i} className="border-t border-white/10">
-                  <td className="p-3 text-white">
-                    {agent.name || agent.agencyName}
-                  </td>
-                  <td className="text-white">
-                    {(agent.revenue || 0).toLocaleString()}$
-                  </td>
-                  <td className="text-green-400">
-                    {agent.commissionRate || 0}%
-                  </td>
-                  <td>{getStatusBadge(agent.status)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex justify-center gap-2 mt-6">
-          <button
-            onClick={() =>
-              setCurrentPage((p) => Math.max(1, p - 1))
-            }
-          >
-            <FaChevronRight />
-          </button>
-
-          {[...Array(totalPages)].map((_, i) => (
-            <button key={i} onClick={() => setCurrentPage(i + 1)}>
-              {i + 1}
-            </button>
-          ))}
-
-          <button
-            onClick={() =>
-              setCurrentPage((p) =>
-                Math.min(totalPages, p + 1)
-              )
-            }
-          >
-            <FaChevronLeft />
-          </button>
-        </div>
-      )}
+      </div>
     </div>
   );
-}
+};
+
+export default Table;
