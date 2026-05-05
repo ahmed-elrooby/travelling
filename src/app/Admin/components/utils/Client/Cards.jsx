@@ -5,12 +5,14 @@ import { useContext } from "react";
 import { FaUsers, FaChartLine, FaUserPlus, FaCoins } from "react-icons/fa";
 
 export default function CustomersStats() {
-  const {B2C} = useContext(Admin)
-  console.log(B2C )
+  const { B2C } = useContext(Admin);
+
+  const kpis = B2C?.data?.kpis;
+
   const stats = [
     {
       title: "إجمالي العملاء",
-      value: "892",
+      value: kpis?.totalCustomers ?? 0,
       icon: FaUsers,
       iconColor: "text-blue-400",
       bg: "bg-blue-500/20",
@@ -19,7 +21,7 @@ export default function CustomersStats() {
     },
     {
       title: "إجمالي إنفاقهم",
-      value: "1.2M$",
+      value: `${kpis?.totalValue ?? 0}$`,
       icon: FaChartLine,
       iconColor: "text-green-400",
       bg: "bg-green-500/20",
@@ -27,7 +29,7 @@ export default function CustomersStats() {
     },
     {
       title: "عملاء جدد (هذا الشهر)",
-      value: "+45",
+      value: `+${kpis?.newThisMonth ?? 0}`,
       icon: FaUserPlus,
       iconColor: "text-yellow-400",
       bg: "bg-yellow-500/20",
@@ -35,7 +37,7 @@ export default function CustomersStats() {
     },
     {
       title: "متوسط الإنفاق",
-      value: "1,345$",
+      value: `${kpis?.avgSpend ?? 0}$`,
       icon: FaCoins,
       iconColor: "text-purple-400",
       bg: "bg-purple-500/20",
@@ -44,7 +46,7 @@ export default function CustomersStats() {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       {stats.map((item, index) => {
         const Icon = item.icon;
 
@@ -53,10 +55,9 @@ export default function CustomersStats() {
             key={index}
             data-aos="fade-up"
             data-aos-delay={item.delay}
-            className="rounded-2xl p-5 bg-white/5 backdrop-blur-md border border-white/10"
+            className="rounded-2xl p-5 bg-white/5 backdrop-blur-md border border-white/10 hover:scale-[1.02] transition"
           >
             <div className="flex justify-between items-center">
-
               {/* Text */}
               <div>
                 <p className="text-gray-400 text-sm">{item.title}</p>
@@ -69,16 +70,23 @@ export default function CustomersStats() {
               <div className={`${item.bg} p-3 rounded-xl`}>
                 <Icon className={`${item.iconColor} text-xl`} />
               </div>
-
             </div>
 
-            {/* Progress bar (only for first card) */}
+            {/* Progress bar */}
             {item.progress && (
               <div className="h-1 w-full bg-white/10 rounded-full mt-4 overflow-hidden">
-                <div className="h-full w-2/3 bg-blue-400 rounded-full" />
+                <div
+                  className="h-full bg-blue-400 rounded-full transition-all duration-500"
+                  style={{
+                    width: `${
+                      kpis?.totalCustomers
+                        ? Math.min(kpis.totalCustomers * 10, 100)
+                        : 0
+                    }%`,
+                  }}
+                />
               </div>
             )}
-
           </div>
         );
       })}

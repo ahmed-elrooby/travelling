@@ -1,8 +1,9 @@
 "use client";
 import axios from 'axios';
-import React, { createContext } from 'react'
+import React, { createContext, useState } from 'react'
 import Cookies from "js-cookie"
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 
 export const Admin = createContext()
 const AdminProvider = ({children}) => {
@@ -152,8 +153,120 @@ const {data:B2C} = useQuery({
 queryFn:getB2C
 })
 
+
+
+//reservation
+const postReservationHotels = async (values) => {
+  try {
+    const {data} = await axios.post(`${baseurl}/bookings/hotels`,values,{
+      headers:{
+        Authorization:`Bearer ${Cookies.get("accessToken")}`
+      }
+    })
+    return data
+  } catch (error) {
+    throw error
+  }
+
+
+}
+const [openHotels,setOpenHotels]=useState(false)
+const HotelQuery = useQueryClient()
+const handleAddHotelMutation =useMutation({
+  mutationKey:["addhotels"],
+  mutationFn:postReservationHotels,
+  onSuccess:(data)=>{
+    toast.success(data?.message)
+    setOpenHotels(false)
+    HotelQuery.invalidateQueries(["Hotel"])
+  },
+  onError:(err)=>{
+    console.log(err)
+    toast.error(err?.response?.data?.message)
+  }
+})
+const handleAddHotelFinal = (values)=>{
+  console.log(values)
+  handleAddHotelMutation.mutate(values)
+}
+
+
+//BookingsHotels
+const GetBookigsHotels = async () => {
+  try {
+    const {data} = await axios.get(`${baseurl}/bookings/hotels`,{
+      headers:{
+        Authorization:`Bearer ${Cookies.get("accessToken")}`
+      }
+    })
+    return data
+  } catch (error) {
+    throw error
+  }
+}
+
+const {data:BookingsHotels} = useQuery({
+  queryKey:["BookingsHotels"],
+queryFn:GetBookigsHotels 
+})
+ 
+
+
+// users
+const GetUsers = async () => {
+  try {
+    const {data} = await axios.get(`${baseurl}/users`,{
+      headers:{
+        Authorization:`Bearer ${Cookies.get("accessToken")}`
+      }
+    })
+    return data?.data
+  } catch (error) {
+    throw error
+  }
+}
+
+const {data:User} = useQuery({
+  queryKey:["User"],
+queryFn:GetUsers
+})
+
+
+//deleteuser
+const deleteUser = async (id) => {
+  try {
+    const {data} = await axios.delete(`${baseurl}/users/${id}`,{
+      headers:{
+        "Content-Type":"application/json",
+        "Authorization":`Bearer ${Cookies.get("accessToken")}`
+      }
+    })
+    return data
+  } catch (error) {
+    throw error
+  }
+}
+
+const deleteUserMutation = useMutation({
+  mutationKey:["deleteuser"],
+  mutationFn:deleteUser,
+  onSuccess:(data)=>{
+    toast.success(data?.message || "User Deleted Successfully")
+  }, onError:(err)=>{
+    toast.error(err?.response?.data?.message || "Something went wrong")
+  }
+})
+
+
+
+const deleteUserFun = (id)=>{
+  deleteUserMutation.mutate(id)}
+
+
+
+
   return (
-    <Admin.Provider value={{overview, flights, Hotel, Cars, Users, B2B, B2C}} >
+    <Admin.Provider value={{overview, flights, Hotel, Cars, Users, B2B, B2C,handleAddHotelFinal,openHotels,setOpenHotels,BookingsHotels, User, deleteUserFun}} >
       {children}
     </Admin.Provider>
   )

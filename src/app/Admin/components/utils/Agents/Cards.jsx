@@ -33,7 +33,7 @@ const colorStyles = {
 
 const Cards = () => {
   const { B2B } = useContext(Admin)
-
+console.log(B2B)
   const kpis = B2B?.data?.kpis
 
   const stats = [

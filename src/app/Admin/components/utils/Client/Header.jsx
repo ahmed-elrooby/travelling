@@ -20,12 +20,12 @@ export default function AgentsHeader({ openAgentModal }) {
 
           <FaChevronLeft className="text-xs" />
 
-          <span className="text-white">الوكلاء B2B</span>
+          <span className="text-white">الوكلاء B2B </span>
         </div>
 
         {/* Title */}
         <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
-          الوكلاء B2B
+          الوكلاء B2C
         </h2>
 
         {/* Description */}

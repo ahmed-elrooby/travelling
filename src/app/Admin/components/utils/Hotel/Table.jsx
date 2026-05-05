@@ -1,234 +1,241 @@
 "use client";
 
-import {
-  FaMapMarkerAlt,
-  FaCalendarAlt,
-  FaCalendarCheck,
-  FaSearch,
-  FaStar,
-  FaStarHalfAlt,
-  FaUmbrellaBeach,
-  FaList,
-  FaThLarge,
-  FaChevronRight,
-  FaChevronLeft,
-} from "react-icons/fa";
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import { Admin } from "@/app/Providers/AdminContext/AdminProvider";
+import {
+  FaUsers,
+  FaUserPlus,
+  FaDollarSign,
+  FaChartLine,
+  FaCrown,
+  FaUserCheck,
+  FaUser,
+} from "react-icons/fa";
+import { motion } from "framer-motion";
 
-export default function HotelSearchFilter() {
-  const { Hotel } = useContext(Admin);
+export default function B2CDashboard() {
+  const { B2C } = useContext(Admin);
 
-  const data = Hotel?.data;
+  const data = B2C?.data;
 
-  // ===== تحويل الداتا =====
-  const hotelsData =
-    data?.recentBookings?.map((item, index) => ({
-      id: item.id || index,
-      name: item.hotel,
-      location: item.city,
-      stars: 4,
-      pricePerNight: item.price,
-      image:
-        "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400",
-      rating: 4.5,
-      reviews: 100,
-      available: item.status === "confirmed",
-      checkIn: item.checkIn,
-      checkOut: item.checkOut,
-    })) || [];
-
-  // ===== state =====
-  const [view, setView] = useState("cards");
-  const [activeFilter, setActiveFilter] = useState("جميع الفنادق");
-  const [searchDestination, setSearchDestination] = useState("");
-  const [guests, setGuests] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const itemsPerPage = 6;
-
-  // ===== filters من API =====
-  const filterOptions =
-    data?.filters?.categories?.map((cat) => ({
-      name: cat,
-    })) || [];
-
-  // ===== فلترة =====
-  const filteredHotels = hotelsData.filter((hotel) => {
-    return (
-      hotel.name.includes(searchDestination) ||
-      hotel.location.includes(searchDestination)
-    );
-  });
-
-  // ===== pagination =====
-  const totalPages = Math.ceil(filteredHotels.length / itemsPerPage);
-
-  const paginatedHotels = filteredHotels.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+  if (!data) return (
+    <div className="flex items-center justify-center h-64">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+    </div>
   );
 
-  // ===== stars =====
-  const renderStars = (stars) => {
-    const full = Math.floor(stars);
-    const half = stars % 1 !== 0;
-    return (
-      <>
-        {Array(full)
-          .fill(0)
-          .map((_, i) => (
-            <FaStar key={i} className="text-yellow-400 text-xs" />
-          ))}
-        {half && <FaStarHalfAlt className="text-yellow-400 text-xs" />}
-      </>
-    );
+  const { kpis, customerDistribution, growthLast6Months } = data;
+
+  // Helper to get icon based on customer type
+  const getCustomerIcon = (type) => {
+    if (type.includes('VIP')) return <FaCrown className="text-yellow-400" />;
+    if (type.includes('دائمون')) return <FaUserCheck className="text-green-400" />;
+    return <FaUser className="text-blue-400" />;
+  };
+
+  // Helper to get gradient based on customer type
+  const getCustomerGradient = (type) => {
+    if (type.includes('VIP')) return 'from-yellow-600/20 to-amber-600/20 border-yellow-500/30';
+    if (type.includes('دائمون')) return 'from-green-600/20 to-emerald-600/20 border-green-500/30';
+    return 'from-blue-600/20 to-cyan-600/20 border-blue-500/30';
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
   };
 
   return (
-    <div className="space-y-6">
-      {/* SEARCH */}
-      <div className="p-6 border rounded-2xl bg-white/5 border-purple-500/20">
-        <div className="grid md:grid-cols-4 gap-4">
-          <input
-            placeholder="ابحث عن فندق"
-            value={searchDestination}
-            onChange={(e) => setSearchDestination(e.target.value)}
-            className="px-4 py-2 bg-white/5 border border-purple-500/30 rounded-xl text-white"
-          />
+    <div className="space-y-6 p-4 md:p-6 bg-gradient-to-br from-gray-900 via-gray-900 to-purple-900/20 min-h-screen">
+      
+      {/* Header */}
+      <motion.div 
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        className="mb-8"
+      >
+        <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 bg-clip-text text-transparent">
+          لوحة تحكم B2C
+        </h1>
+        <p className="text-gray-400 mt-2">نظرة عامة على أداء العملاء والإيرادات</p>
+      </motion.div>
 
-          <select
-            value={guests}
-            onChange={(e) => setGuests(e.target.value)}
-            className="px-4 py-2 bg-white/5 border border-purple-500/30 rounded-xl text-white"
+      {/* ===== KPI CARDS ===== */}
+      <motion.div 
+        initial="hidden"
+        animate="visible"
+        variants={{
+          visible: { transition: { staggerChildren: 0.1 } }
+        }}
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
+      >
+        {[
+          { icon: FaUsers, label: 'إجمالي العملاء', value: kpis.totalCustomers, color: 'purple', prefix: '', suffix: '' },
+          { icon: FaDollarSign, label: 'إجمالي القيمة', value: kpis.totalValue, color: 'green', prefix: '', suffix: '$' },
+          { icon: FaUserPlus, label: 'عملاء جدد', value: kpis.newThisMonth, color: 'blue', prefix: '+', suffix: '' },
+          { icon: FaChartLine, label: 'متوسط الإنفاق', value: kpis.avgSpend, color: 'pink', prefix: '', suffix: '$' },
+        ].map((item, idx) => (
+          <motion.div
+            key={idx}
+            variants={cardVariants}
+            whileHover={{ scale: 1.02, y: -5 }}
+            transition={{ type: "spring", stiffness: 300 }}
+            className={`relative overflow-hidden p-6 rounded-2xl bg-gradient-to-br from-${item.color}-600/10 to-${item.color}-600/5 backdrop-blur-sm border border-${item.color}-500/20 hover:border-${item.color}-500/40 transition-all duration-300 shadow-xl`}
           >
-            {data?.filters?.guestsCount?.map((g, i) => (
-              <option key={i} className="bg-black">
-                {g}
-              </option>
-            ))}
-          </select>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent rounded-full -mr-16 -mt-16"></div>
+            <item.icon className={`text-${item.color}-400 text-3xl mb-3`} />
+            <p className="text-gray-400 text-sm mb-1">{item.label}</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-white">
+              {item.prefix}{typeof item.value === 'number' ? item.value.toLocaleString() : item.value}{item.suffix}
+            </h2>
+            <div className={`absolute bottom-0 left-0 h-1 bg-gradient-to-r from-${item.color}-400 to-${item.color}-600 w-full opacity-50`}></div>
+          </motion.div>
+        ))}
+      </motion.div>
 
-          <button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl">
-            <FaSearch />
-          </button>
-        </div>
+      {/* ===== TWO COLUMN LAYOUT ===== */}
+      <div className="grid lg:grid-cols-2 gap-6">
+        
+        {/* Customer Distribution */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="p-6 bg-white/5 backdrop-blur-sm border border-purple-500/20 rounded-2xl shadow-xl hover:shadow-purple-500/10 transition-all duration-300"
+        >
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-white">توزيع العملاء</h2>
+            <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <FaUsers className="text-purple-400" />
+            </div>
+          </div>
 
-        {/* FILTERS */}
-        <div className="flex flex-wrap gap-2 mt-4">
-          {filterOptions.map((f, i) => (
-            <span
-              key={i}
-              onClick={() => setActiveFilter(f.name)}
-              className={`px-3 py-1 rounded-full cursor-pointer ${
-                activeFilter === f.name
-                  ? "bg-purple-500 text-white"
-                  : "bg-white/10 text-gray-300"
-              }`}
-            >
-              {f.name}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* HEADER */}
-      <div className="flex justify-between items-center">
-        <div className="flex gap-2">
-          <button onClick={() => setView("cards")}>
-            <FaThLarge />
-          </button>
-          <button onClick={() => setView("table")}>
-            <FaList />
-          </button>
-        </div>
-      </div>
-
-      {/* RESULTS */}
-      {view === "cards" ? (
-        <div className="grid lg:grid-cols-3 gap-4">
-          {paginatedHotels.map((hotel) => (
-            <div
-              key={hotel.id}
-              className="p-4 bg-white/5 border border-purple-500/20 rounded-2xl"
-            >
-              <img
-                src={hotel.image}
-                className="w-full h-40 object-cover rounded-xl"
-              />
-
-              <h3 className="text-white mt-2">{hotel.name}</h3>
-              <p className="text-gray-400 text-sm flex items-center gap-1">
-                <FaMapMarkerAlt /> {hotel.location}
-              </p>
-
-              <div className="flex gap-1 mt-2">
-                {renderStars(hotel.rating)}
-              </div>
-
-              <p className="text-xs text-gray-400 mt-1">
-                {hotel.checkIn} → {hotel.checkOut}
-              </p>
-
-              <div className="flex justify-between mt-3">
-                <span className="text-purple-400 font-bold">
-                  {hotel.pricePerNight}$
-                </span>
-
-                <span
-                  className={`text-xs px-2 py-1 rounded ${
-                    hotel.available
-                      ? "bg-green-500/20 text-green-400"
-                      : "bg-red-500/20 text-red-400"
-                  }`}
+          <div className="space-y-4">
+            {customerDistribution.map((c, i) => {
+              const percentage = c.value;
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 + i * 0.1 }}
+                  className="relative"
                 >
-                  {hotel.available ? "متاح" : "غير متاح"}
-                </span>
+                  <div className="flex justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      {getCustomerIcon(c.type)}
+                      <span className="text-gray-300 text-sm">{c.type}</span>
+                    </div>
+                    <span className="text-white font-bold">{percentage}%</span>
+                  </div>
+                  <div className="h-3 bg-white/10 rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${percentage}%` }}
+                      transition={{ duration: 1, delay: 0.5 + i * 0.1 }}
+                      className={`h-full rounded-full bg-gradient-to-r ${
+                        c.type.includes('VIP') ? 'from-yellow-400 to-amber-500' :
+                        c.type.includes('دائمون') ? 'from-green-400 to-emerald-500' :
+                        'from-blue-400 to-cyan-500'
+                      }`}
+                    />
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Distribution Stats */}
+          <div className="grid grid-cols-3 gap-3 mt-6 pt-4 border-t border-white/10">
+            {customerDistribution.map((c, i) => (
+              <div key={i} className="text-center">
+                <p className="text-xs text-gray-500 mb-1">النسبة</p>
+                <p className="text-lg font-bold text-white">{c.value}%</p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Quick Stats / Additional Info */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+          className="p-6 bg-white/5 backdrop-blur-sm border border-purple-500/20 rounded-2xl shadow-xl hover:shadow-purple-500/10 transition-all duration-300"
+        >
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-white">ملخص سريع</h2>
+            <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+              <FaChartLine className="text-green-400" />
+            </div>
+          </div>
+
+          <div className="space-y-5">
+            {/* Average per customer */}
+            <div className="p-4 rounded-xl bg-gradient-to-r from-purple-600/10 to-pink-600/10 border border-purple-500/20">
+              <p className="text-gray-400 text-sm mb-1">متوسط القيمة لكل عميل</p>
+              <p className="text-2xl font-bold text-white">
+                {(kpis.totalValue / kpis.totalCustomers).toLocaleString()}$
+              </p>
+            </div>
+
+            {/* Growth indicator */}
+            <div className="p-4 rounded-xl bg-gradient-to-r from-blue-600/10 to-cyan-600/10 border border-blue-500/20">
+              <p className="text-gray-400 text-sm mb-1">نسبة العملاء الجدد</p>
+              <p className="text-2xl font-bold text-white">
+                {((kpis.newThisMonth / kpis.totalCustomers) * 100).toFixed(1)}%
+              </p>
+              <div className="mt-2 h-2 bg-white/10 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full"
+                  style={{ width: `${(kpis.newThisMonth / kpis.totalCustomers) * 100}%` }}
+                />
               </div>
             </div>
-          ))}
-        </div>
-      ) : (
-        <table className="w-full text-white">
-          <thead>
-            <tr className="text-gray-400">
-              <th>الفندق</th>
-              <th>الموقع</th>
-              <th>السعر</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedHotels.map((h) => (
-              <tr key={h.id} className="border-t border-purple-500/20">
-                <td>{h.name}</td>
-                <td>{h.location}</td>
-                <td>{h.pricePerNight}$</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
 
-      {/* PAGINATION */}
-      <div className="flex justify-center gap-2 mt-4">
-        <button
-          onClick={() =>
-            setCurrentPage((p) => Math.max(1, p - 1))
-          }
-        >
-          <FaChevronRight />
-        </button>
-
-        <span className="text-white">{currentPage}</span>
-
-        <button
-          onClick={() =>
-            setCurrentPage((p) => Math.min(totalPages, p + 1))
-          }
-        >
-          <FaChevronLeft />
-        </button>
+            {/* Total customer value insight */}
+            <div className="p-4 rounded-xl bg-gradient-to-r from-amber-600/10 to-orange-600/10 border border-amber-500/20">
+              <p className="text-gray-400 text-sm mb-1">إجمالي القيمة</p>
+              <p className="text-2xl font-bold text-white">
+                {kpis.totalValue.toLocaleString()}$
+              </p>
+              <p className="text-xs text-gray-500 mt-1">جميع العملاء</p>
+            </div>
+          </div>
+        </motion.div>
       </div>
+
+      {/* Optional: Growth Chart Summary if growthLast6Months exists */}
+      {growthLast6Months && growthLast6Months.length > 0 && (
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35 }}
+          className="p-6 bg-white/5 backdrop-blur-sm border border-purple-500/20 rounded-2xl shadow-xl"
+        >
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-white">النمو خلال 6 أشهر</h2>
+            <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <FaChartLine className="text-purple-400" />
+            </div>
+          </div>
+          
+          <div className="flex items-end justify-between gap-2 h-40">
+            {growthLast6Months.map((month, idx) => (
+              <div key={idx} className="flex-1 flex flex-col items-center gap-2">
+                <motion.div
+                  initial={{ height: 0 }}
+                  animate={{ height: `${(month.value / Math.max(...growthLast6Months.map(m => m.value))) * 100}%` }}
+                  transition={{ duration: 0.8, delay: 0.5 + idx * 0.05 }}
+                  className="w-full bg-gradient-to-t from-purple-500 to-pink-500 rounded-t-lg"
+                  style={{ height: `${(month.value / Math.max(...growthLast6Months.map(m => m.value))) * 100}%` }}
+                />
+                <span className="text-xs text-gray-400">{month.month || `شهر ${idx + 1}`}</span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }
