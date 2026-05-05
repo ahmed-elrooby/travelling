@@ -42,20 +42,20 @@ export default function CarRentalStats() {
   ];
 
   return (
-    <div className="w-full px-2 sm:px-4 lg:px-0">
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 mb-8">
+    <div className="w-full px-2 mt-6 sm:px-4 lg:px-0">
+      <div className="grid grid-cols-1 gap-4 mb-8 sm:grid-cols-2 xl:grid-cols-4 sm:gap-6">
         {stats.map((stat, index) => (
           <div
             key={index}
             className="rounded-2xl p-4 sm:p-5 bg-white/5 backdrop-blur-md border border-white/10 
             hover:scale-[1.02] transition-all duration-300"
           >
-            <div className="flex justify-between items-center">
+            <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-xs sm:text-sm">
+                <p className="text-xs text-gray-400 sm:text-sm">
                   {stat.title}
                 </p>
-                <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mt-1">
+                <p className="mt-1 text-xl font-bold text-white sm:text-2xl lg:text-3xl">
                   {stat.value}
                 </p>
               </div>

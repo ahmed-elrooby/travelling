@@ -180,8 +180,10 @@ const AuthProvider = ({ children }) => {
 
       if (role === "admin") {
         router.push("/Admin");
-      } else {
-        router.push("/");
+      } else if (role === "b2c") {
+        router.push("/Client");
+      }else if (role === "b2b") {
+        router.push("/Agents");
       }
     },
 

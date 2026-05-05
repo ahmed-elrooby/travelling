@@ -1,142 +1,165 @@
 "use client";
 
 import {
-  FaMapMarkerAlt,
-  FaCalendarAlt,
-  FaCalendarCheck,
   FaSearch,
-  FaCar,
-  FaCarSide,
-  FaTruckPickup,
-  FaCrown,
   FaList,
   FaThLarge,
   FaChevronRight,
   FaChevronLeft,
-  FaEye,
-  FaEdit,
-  FaStar,
+  FaCar,
+  FaMapMarkerAlt,
+  FaCalendarAlt,
+  FaMoneyBillWave,
+  FaSyncAlt,
+  FaTimes,
 } from "react-icons/fa";
-
 import { useState, useContext } from "react";
 import { Admin } from "@/app/Providers/AdminContext/AdminProvider";
 
 export default function CarRentalSearchFilter() {
-  const { Cars } = useContext(Admin);
+  const { carsSection } = useContext(Admin);
 
   const [view, setView] = useState("cards");
   const [searchLocation, setSearchLocation] = useState("");
   const [pickupDate, setPickupDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
-  const [carType, setCarType] = useState("جميع الفئات");
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortBy, setSortBy] = useState("rating");
+  const [activeFilter, setActiveFilter] = useState(false);
 
   const itemsPerPage = 6;
 
-  // ====== API DATA ======
   const carsData =
-    Cars?.data?.activeBookings?.map((item, index) => ({
-      id: index,
-      name: item.car,
-      type: "حجز",
-      category: "عام",
-      pricePerDay: item.price || 0,
-      totalPrice: item.price || 0,
-      image: "https://via.placeholder.com/400x300",
-      features: [],
-      transmission: "أوتوماتيك",
-      seats: 5,
-      fuel: "بنزين",
-      pickup: item.from,
-      return: item.to,
-      rating: 4,
-      reviews: 0,
+    carsSection?.map((item) => ({
+      id: item.id,
+      car: item.car,
+      duration: item.duration,
+      fromCity: item.fromCity,
+      toCity: item.toCity,
+      pickupDate: item.pickupDate,
+      returnDate: item.returnDate,
+      price: item.price,
+      status: item.status,
     })) || [];
 
-  // ===== Loading =====
-  if (!Cars) {
+  if (!carsSection) {
     return (
-      <div className="text-center text-gray-400 py-10">
-        جاري تحميل البيانات...
+      <div className="flex items-center justify-center py-20">
+        <div className="text-center">
+          <div className="inline-block w-12 h-12 border-4 border-purple-500 rounded-full border-t-transparent animate-spin"></div>
+          <p className="mt-4 text-gray-400">جاري تحميل البيانات...</p>
+        </div>
       </div>
     );
   }
 
-  // ===== FILTER =====
   const getFilteredCars = () => {
     let filtered = [...carsData];
 
     if (searchLocation) {
       filtered = filtered.filter(
-        (car) =>
-          car.pickup.includes(searchLocation) ||
-          car.return.includes(searchLocation)
+        (item) =>
+          item.fromCity?.toLowerCase().includes(searchLocation.toLowerCase()) ||
+          item.toCity?.toLowerCase().includes(searchLocation.toLowerCase())
       );
     }
 
-    if (carType !== "جميع الفئات") {
-      filtered = filtered.filter((car) => car.category === carType);
+    if (pickupDate) {
+      filtered = filtered.filter(
+        (item) =>
+          new Date(item.pickupDate).toISOString().slice(0, 10) === pickupDate
+      );
     }
 
-    if (sortBy === "rating") {
-      filtered.sort((a, b) => b.rating - a.rating);
-    } else if (sortBy === "price_asc") {
-      filtered.sort((a, b) => a.pricePerDay - b.pricePerDay);
-    } else if (sortBy === "price_desc") {
-      filtered.sort((a, b) => b.pricePerDay - a.pricePerDay);
+    if (returnDate) {
+      filtered = filtered.filter(
+        (item) =>
+          new Date(item.returnDate).toISOString().slice(0, 10) === returnDate
+      );
     }
 
     return filtered;
   };
 
   const filteredCars = getFilteredCars();
-
   const totalPages = Math.ceil(filteredCars.length / itemsPerPage);
-
   const paginatedCars = filteredCars.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  const renderStars = (rating) => {
-    return [...Array(Math.floor(rating))].map((_, i) => (
-      <FaStar key={i} className="text-yellow-400 text-xs" />
-    ));
+  const clearFilters = () => {
+    setSearchLocation("");
+    setPickupDate("");
+    setReturnDate("");
+    setCurrentPage(1);
   };
 
-  // ===== Pagination =====
+  const getArabicStatus = (status) => {
+    switch (status?.toLowerCase()) {
+      case "confirmed": return "مؤكد";
+      case "pending": return "قيد الانتظار";
+      case "cancelled": return "ملغي";
+      case "refunded": return "مسترجع";
+      default: return status;
+    }
+  };
+
+  const getStatusColor = (status) => {
+    switch (status?.toLowerCase()) {
+      case "confirmed": return "bg-green-500/20 text-green-400 border-green-500/30";
+      case "pending": return "bg-yellow-500/20 text-yellow-400 border-yellow-500/30";
+      case "cancelled": return "bg-red-500/20 text-red-400 border-red-500/30";
+      case "refunded": return "bg-blue-500/20 text-blue-400 border-blue-500/30";
+      default: return "bg-gray-500/20 text-gray-400 border-gray-500/30";
+    }
+  };
+
   const Pagination = () => {
     if (totalPages <= 1) return null;
 
     return (
-      <div className="flex items-center justify-center gap-2 mt-6">
+      <div className="flex items-center justify-center gap-2 pt-4 mt-8 border-t border-gray-700">
         <button
           onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-          className="px-3 py-2 text-gray-400 hover:bg-white/10 rounded-lg"
+          disabled={currentPage === 1}
+          className="p-2 text-gray-400 transition-all rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <FaChevronRight />
         </button>
 
-        {[...Array(totalPages)].map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrentPage(i + 1)}
-            className={`px-3 py-1 rounded-lg ${
-              currentPage === i + 1
-                ? "bg-purple-500 text-white"
-                : "text-gray-400 hover:bg-white/10"
-            }`}
-          >
-            {i + 1}
-          </button>
-        ))}
+        <div className="flex gap-1">
+          {[...Array(Math.min(totalPages, 5))].map((_, i) => {
+            let pageNum;
+            if (totalPages <= 5) {
+              pageNum = i + 1;
+            } else if (currentPage <= 3) {
+              pageNum = i + 1;
+            } else if (currentPage >= totalPages - 2) {
+              pageNum = totalPages - 4 + i;
+            } else {
+              pageNum = currentPage - 2 + i;
+            }
+
+            return (
+              <button
+                key={i}
+                onClick={() => setCurrentPage(pageNum)}
+                className={`min-w-[40px] h-10 px-3 rounded-lg transition-all duration-200 font-medium ${
+                  currentPage === pageNum
+                    ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg"
+                    : "text-gray-400 hover:bg-gray-800"
+                }`}
+              >
+                {pageNum}
+              </button>
+            );
+          })}
+        </div>
 
         <button
-          onClick={() =>
-            setCurrentPage((p) => Math.min(totalPages, p + 1))
-          }
-          className="px-3 py-2 text-gray-400 hover:bg-white/10 rounded-lg"
+          onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+          disabled={currentPage === totalPages}
+          className="p-2 text-gray-400 transition-all rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <FaChevronLeft />
         </button>
@@ -144,167 +167,224 @@ export default function CarRentalSearchFilter() {
     );
   };
 
+  const hasActiveFilters = searchLocation || pickupDate || returnDate;
+
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen p-6 font-sans bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900" dir="rtl">
+      <div className="mx-auto space-y-6 max-w-7xl">
 
-      {/* ===== FILTER ===== */}
-      <div className="p-5 rounded-2xl bg-white/5 border border-purple-500/20">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-
-          <input
-            placeholder="الموقع"
-            value={searchLocation}
-            onChange={(e) => setSearchLocation(e.target.value)}
-            className="bg-white/5 border border-purple-500/30 rounded-xl px-4 py-2 text-white"
-          />
-
-          <input
-            type="date"
-            value={pickupDate}
-            onChange={(e) => setPickupDate(e.target.value)}
-            className="bg-white/5 border border-purple-500/30 rounded-xl px-4 py-2 text-white"
-          />
-
-          <input
-            type="date"
-            value={returnDate}
-            onChange={(e) => setReturnDate(e.target.value)}
-            className="bg-white/5 border border-purple-500/30 rounded-xl px-4 py-2 text-white"
-          />
-
-          <select
-            value={carType}
-            onChange={(e) => setCarType(e.target.value)}
-            className="bg-white/5 border border-purple-500/30 rounded-xl px-4 py-2 text-white"
-          >
-            <option>جميع الفئات</option>
-            <option>عام</option>
-          </select>
-
-          <button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl py-2 flex justify-center items-center">
-            <FaSearch />
-          </button>
-        </div>
-      </div>
-
-      {/* ===== RESULTS ===== */}
-      <div className="p-5 rounded-2xl bg-white/5 border border-purple-500/20">
-
-        {/* HEADER */}
-        <div className="flex flex-col sm:flex-row justify-between gap-3 mb-5">
-
-          <div className="flex gap-2">
-            <button
-              onClick={() => setView("cards")}
-              className={`p-2 rounded-lg ${
-                view === "cards"
-                  ? "bg-purple-500 text-white"
-                  : "bg-white/5 text-gray-400"
-              }`}
-            >
-              <FaThLarge />
-            </button>
-
-            <button
-              onClick={() => setView("table")}
-              className={`p-2 rounded-lg ${
-                view === "table"
-                  ? "bg-purple-500 text-white"
-                  : "bg-white/5 text-gray-400"
-              }`}
-            >
-              <FaList />
-            </button>
-          </div>
-
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="bg-white/5 border border-purple-500/30 rounded-xl px-3 py-1 text-white"
-          >
-            <option value="rating">الأكثر تقييماً</option>
-            <option value="price_asc">السعر الأقل</option>
-            <option value="price_desc">السعر الأعلى</option>
-          </select>
+        {/* Header */}
+        <div className="mb-8 text-center">
+          <h1 className="text-4xl font-bold text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text">
+            استئجار السيارات
+          </h1>
+          <p className="mt-2 text-gray-400">اختر سيارتك المفضلة وانطلق في مغامرتك</p>
         </div>
 
-        {/* ===== CARDS ===== */}
-        {view === "cards" ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-
-            {paginatedCars.map((car) => (
-              <div
-                key={car.id}
-                className="rounded-2xl overflow-hidden bg-white/5 border border-purple-500/20 hover:scale-[1.02] transition"
-              >
-                <img
-                  src={car.image}
-                  className="h-44 w-full object-cover"
-                />
-
-                <div className="p-4">
-                  <h3 className="text-white font-bold">{car.name}</h3>
-
-                  <div className="flex gap-1 mt-2">
-                    {renderStars(car.rating)}
-                  </div>
-
-                  <div className="flex justify-between mt-4">
-                    <span className="text-gray-400 text-sm">
-                      {car.seats} مقاعد
-                    </span>
-
-                    <span className="text-purple-400 font-bold">
-                      {car.pricePerDay}$
-                    </span>
-                  </div>
-
-                  <button className="w-full mt-4 py-2 bg-purple-500 text-white rounded-xl">
-                    استأجر
-                  </button>
-                </div>
+        {/* Filter Section */}
+        <div className="relative overflow-hidden transition-all duration-300 border border-gray-700 rounded-2xl bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <FaSearch className="text-purple-400" />
+                <h3 className="font-bold text-white">فلترة البحث</h3>
               </div>
-            ))}
+              {hasActiveFilters && (
+                <button
+                  onClick={clearFilters}
+                  className="flex items-center gap-1 text-sm text-gray-400 transition-colors hover:text-red-400"
+                >
+                  <FaTimes />
+                  <span>مسح الكل</span>
+                </button>
+              )}
+            </div>
 
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+              <div className="relative">
+                <FaMapMarkerAlt className="absolute text-gray-500 -translate-y-1/2 right-3 top-1/2" />
+                <input
+                  placeholder="المدينة أو المنطقة"
+                  value={searchLocation}
+                  onChange={(e) => setSearchLocation(e.target.value)}
+                  className="w-full px-10 py-3 text-white placeholder-gray-500 transition-all border border-gray-700 bg-gray-800/50 rounded-xl focus:outline-none focus:border-purple-500"
+                />
+              </div>
+
+              <div className="relative">
+                <FaCalendarAlt className="absolute text-gray-500 -translate-y-1/2 right-3 top-1/2" />
+                <input
+                  type="date"
+                  value={pickupDate}
+                  onChange={(e) => setPickupDate(e.target.value)}
+                  className="w-full px-10 py-3 text-white placeholder-gray-500 transition-all border border-gray-700 bg-gray-800/50 rounded-xl focus:outline-none focus:border-purple-500"
+                />
+              </div>
+
+              <div className="relative">
+                <FaCalendarAlt className="absolute text-gray-500 -translate-y-1/2 right-3 top-1/2" />
+                <input
+                  type="date"
+                  value={returnDate}
+                  onChange={(e) => setReturnDate(e.target.value)}
+                  className="w-full px-10 py-3 text-white placeholder-gray-500 transition-all border border-gray-700 bg-gray-800/50 rounded-xl focus:outline-none focus:border-purple-500"
+                />
+              </div>
+
+              <button className="relative overflow-hidden transition-all group bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl hover:shadow-lg hover:shadow-purple-500/25">
+                <div className="absolute inset-0 transition-opacity bg-white opacity-0 group-hover:opacity-20"></div>
+                <div className="relative flex items-center justify-center gap-2 px-6 py-3 font-medium text-white">
+                  <FaSearch />
+                  <span>بحث</span>
+                </div>
+              </button>
+            </div>
           </div>
-        ) : (
-          // ===== TABLE =====
-          <div className="overflow-x-auto">
-            <table className="min-w-[600px] w-full text-sm">
-              <thead>
-                <tr className="text-gray-400">
-                  <th className="p-2">السيارة</th>
-                  <th>السعر</th>
-                  <th>إجراءات</th>
-                </tr>
-              </thead>
+        </div>
 
-              <tbody>
-                {paginatedCars.map((car) => (
-                  <tr
-                    key={car.id}
-                    className="border-t border-purple-500/20"
+        {/* Results Section */}
+        <div className="overflow-hidden transition-all duration-300 border border-gray-700 rounded-2xl bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm">
+          
+          {/* Toolbar */}
+          <div className="flex items-center justify-between p-4 mt-6 border-b border-gray-700">
+            <div className="flex gap-2">
+              <button
+                onClick={() => setView("cards")}
+                className={`p-2.5 rounded-xl transition-all duration-200 ${
+                  view === "cards"
+                    ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg"
+                    : "bg-gray-800 text-gray-400 hover:bg-gray-700"
+                }`}
+              >
+                <FaThLarge />
+              </button>
+              <button
+                onClick={() => setView("table")}
+                className={`p-2.5 rounded-xl transition-all duration-200 ${
+                  view === "table"
+                    ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg"
+                    : "bg-gray-800 text-gray-400 hover:bg-gray-700"
+                }`}
+              >
+                <FaList />
+              </button>
+            </div>
+            
+            <div className="flex items-center gap-2 text-sm">
+              <span className="text-gray-400">النتائج:</span>
+              <span className="font-bold text-white">{filteredCars.length}</span>
+              <span className="text-gray-400">سيارة</span>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="p-6">
+            {filteredCars.length === 0 ? (
+              <div className="py-20 text-center">
+                <div className="inline-block p-4 mb-4 bg-gray-800 rounded-full">
+                  <FaCar className="w-12 h-12 text-gray-600" />
+                </div>
+                <p className="text-xl text-gray-400">لا توجد سيارات متاحة</p>
+                <p className="mt-2 text-gray-500">حاول تعديل معايير البحث</p>
+              </div>
+            ) : view === "cards" ? (
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {paginatedCars.map((item) => (
+                  <div
+                    key={item.id}
+                    className="relative overflow-hidden transition-all duration-300 border border-gray-700 group bg-gray-800/50 rounded-2xl hover:border-purple-500/50 hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-1"
                   >
-                    <td className="p-2 text-white">{car.name}</td>
-                    <td className="text-white">{car.pricePerDay}$</td>
-                    <td>
-                      <button className="text-purple-400">
-                        <FaEye />
-                      </button>
-                    </td>
-                  </tr>
+                    <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-purple-500 to-pink-500"></div>
+                    
+                    <div className="p-5">
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <h3 className="text-xl font-bold text-white">{item.car}</h3>
+                          <div className="flex items-center gap-2 mt-1 text-sm text-gray-400">
+                            <FaMapMarkerAlt className="text-purple-400" />
+                            <span>{item.fromCity} ← {item.toCity}</span>
+                          </div>
+                        </div>
+                        <div className={`px-3 py-1 text-xs font-medium rounded-full border ${getStatusColor(item.status)}`}>
+                          {getArabicStatus(item.status)}
+                        </div>
+                      </div>
+
+                      <div className="p-3 mt-3 bg-gray-900/50 rounded-xl">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2 text-gray-400">
+                            <FaCalendarAlt className="text-purple-400" />
+                            <span className="text-sm">الاستلام</span>
+                          </div>
+                          <span className="text-sm text-white">
+                            {new Date(item.pickupDate).toLocaleDateString('ar-EG')}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-gray-400">
+                            <FaSyncAlt className="text-pink-400" />
+                            <span className="text-sm">الإرجاع</span>
+                          </div>
+                          <span className="text-sm text-white">
+                            {new Date(item.returnDate).toLocaleDateString('ar-EG')}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-3 mt-4 border-t border-gray-700">
+                        <div className="flex items-center gap-2 text-gray-400">
+                          <FaMoneyBillWave className="text-green-400" />
+                          <span className="text-sm">السعر الإجمالي</span>
+                        </div>
+                        <div>
+                          <span className="text-2xl font-bold text-purple-400">{item.price}</span>
+                          <span className="mr-1 text-gray-400">$</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 ))}
-              </tbody>
-            </table>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-gray-700">
+                      <th className="px-4 py-3 font-medium text-right text-gray-400">السيارة</th>
+                      <th className="px-4 py-3 font-medium text-right text-gray-400">المسار</th>
+                      <th className="px-4 py-3 font-medium text-right text-gray-400">المدة</th>
+                      <th className="px-4 py-3 font-medium text-right text-gray-400">تاريخ الاستلام</th>
+                      <th className="px-4 py-3 font-medium text-right text-gray-400">تاريخ الإرجاع</th>
+                      <th className="px-4 py-3 font-medium text-right text-gray-400">السعر</th>
+                      <th className="px-4 py-3 font-medium text-right text-gray-400">الحالة</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paginatedCars.map((item, index) => (
+                      <tr key={item.id} className={`border-b border-gray-700/50 hover:bg-gray-800/30 transition-colors ${index % 2 === 0 ? 'bg-gray-800/20' : ''}`}>
+                        <td className="px-4 py-3 font-medium text-white">{item.car}</td>
+                        <td className="px-4 py-3 text-gray-300">{item.fromCity} → {item.toCity}</td>
+                        <td className="px-4 py-3 text-gray-300">{item.duration}</td>
+                        <td className="px-4 py-3 text-gray-300">{new Date(item.pickupDate).toLocaleDateString('ar-EG')}</td>
+                        <td className="px-4 py-3 text-gray-300">{new Date(item.returnDate).toLocaleDateString('ar-EG')}</td>
+                        <td className="px-4 py-3">
+                          <span className="font-bold text-purple-400">{item.price}$</span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className={`inline-block px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(item.status)}`}>
+                            {getArabicStatus(item.status)}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            <Pagination />
           </div>
-        )}
-
-        {/* PAGINATION */}
-        <Pagination />
-
-        <p className="text-center text-gray-500 mt-4 text-sm">
-          عرض {paginatedCars.length} من {filteredCars.length}
-        </p>
+        </div>
       </div>
     </div>
   );

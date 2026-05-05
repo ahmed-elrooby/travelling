@@ -61,7 +61,7 @@ const Login = () => {
                       type="email"
                       name="email"
                       placeholder="أدخل بريدك الإلكتروني"
-                      className="w-full py-3 pl-4 pr-12 text-white bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-purple-500"
+                      className="w-full py-3 pl-4 pr-12 text-white border bg-white/5 border-white/10 rounded-xl focus:outline-none focus:border-purple-500"
                     />
                   </div>
 
@@ -85,7 +85,7 @@ const Login = () => {
                       type={showPassword ? "text" : "password"}
                       name="password"
                       placeholder="أدخل كلمة المرور"
-                      className="w-full py-3 pl-12 pr-12 text-white bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-purple-500"
+                      className="w-full py-3 pl-12 pr-12 text-white border bg-white/5 border-white/10 rounded-xl focus:outline-none focus:border-purple-500"
                     />
 
                     <button
@@ -122,12 +122,7 @@ const Login = () => {
           </Formik>
 
           {/* Links */}
-          <div className="mt-6 text-center text-gray-400">
-            ليس لديك حساب؟{" "}
-            <Link href="/register" className="text-purple-400">
-              إنشاء حساب
-            </Link>
-          </div>
+          
         </div>
       </div>
     </div>

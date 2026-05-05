@@ -99,7 +99,7 @@ const Aside = () => {
       {/* زرار الموبايل */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-4 right-4 z-50 p-2 text-purple-400 bg-gray-800 border border-purple-500/30 rounded-lg md:hidden"
+        className="fixed z-50 p-2 text-purple-400 bg-gray-800 border rounded-lg top-4 right-4 border-purple-500/30 md:hidden"
       >
         {isOpen ? (
           <FiX className="w-6 h-6" />
