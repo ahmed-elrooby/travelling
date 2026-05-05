@@ -74,6 +74,8 @@ const {data:flightSection} = useQuery({
   queryKey:["flightSection"],
   queryFn:handleGetFlights
 })
+
+
 //Hotel
 const getHotel = async () => {
   try {
@@ -181,7 +183,8 @@ const postReservationHotels = async (values) => {
   try {
     const {data} = await axios.post(`${baseurl}/bookings/hotels`,values,{
       headers:{
-        Authorization:`Bearer ${Cookies.get("accessToken")}`
+        Authorization:`Bearer ${Cookies.get("accessToken")}`,
+        "Content-Type":"application/json"
       }
     })
     return data
@@ -252,6 +255,44 @@ const {data:User} = useQuery({
 queryFn:GetUsers
 })
 
+// post user 
+const postUser = async (values) =>{
+  try{
+    const {data} = await axios.post(`${baseurl}/users`,values,{
+      headers:{
+        "Content-Type":"application/json",
+        "Authorization":`Bearer ${Cookies.get("accessToken")}`
+      }
+    }
+    )
+    return data
+  }catch(error){
+    throw error
+  }
+}
+
+const [openUser,setOpenUser]=useState(false)
+const userQuery = useQueryClient()
+const AddUserMutation = useMutation({
+  mutationKey:["adduser"],
+  mutationFn:postUser,
+  onSuccess:(data)=>{
+    toast.success(data?.message)
+    setOpenUser(false)
+    userQuery.invalidateQueries(["User"])
+  },
+  onError:(err)=>{
+    toast.error(err?.response?.data?.message) 
+  }
+})
+
+const AddUserFinal = (values)=>{
+  console.log(values)
+  AddUserMutation.mutate(values)
+  
+}
+
+
 
 //deleteuser
 const deleteUser = async (id) => {
@@ -277,8 +318,6 @@ const deleteUserMutation = useMutation({
     toast.error(err?.response?.data?.message || "Something went wrong")
   }
 })
-
-
 
 const deleteUserFun = (id)=>{
   deleteUserMutation.mutate(id)}
@@ -376,10 +415,13 @@ const {data:carsSection}=useQuery({
   queryKey:["carsSection"],
   queryFn:getCarsSection
 })
+
+
+
+
+
   return (
-    <Admin.Provider value={{overview, flights,flightSection, Hotel, Cars,
-     Users, B2B, B2C,handleAddFlight,loadd,setOpenAddFlight,
-     openAddFlight,setOpenAddCar,openAddCar,handleAddCarFinal,carsSection,handleAddHotelFinal,openHotels,setOpenHotels,BookingsHotels, User, deleteUserFun}} >
+    <Admin.Provider value={{overview, flights,flightSection, Hotel, Cars, Users, B2B, B2C,handleAddFlight,loadd,setOpenAddFlight, openAddFlight,setOpenAddCar,openAddCar,handleAddCarFinal,carsSection,handleAddHotelFinal,openHotels,setOpenHotels,BookingsHotels, User, deleteUserFun, AddUserFinal,setOpenUser,openUser}} >
       {children}
     </Admin.Provider>
   )
