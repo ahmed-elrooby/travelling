@@ -3,19 +3,13 @@
 import { FaChevronLeft, FaPlusCircle, FaHotel, FaBell, FaChartLine } from "react-icons/fa";
 import { useContext, useState } from "react";
 import { Admin } from "@/app/Providers/AdminContext/AdminProvider";
-<<<<<<< HEAD
 import AddHotel from "./AddHotel";
 
 export default function HotelBookingsHeader() {
   const [isHovered, setIsHovered] = useState(false);
   const {openHotels,setOpenHotels} = useContext(Admin)
-=======
-import AddBooking from "../Booking/AddBooking";
 
-export default function HotelBookingsHeader() {
-  const [isHovered, setIsHovered] = useState(false);
  
->>>>>>> 6483676e4fa716de7a39df272d3210f5d2e6b596
 
 
   return <>
@@ -62,13 +56,10 @@ export default function HotelBookingsHeader() {
         <div className="flex items-center gap-3">
         
           <button
-<<<<<<< HEAD
             onClick={()=>{
              setOpenHotels(true)
             }}
-=======
     
->>>>>>> 6483676e4fa716de7a39df272d3210f5d2e6b596
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             className="relative flex items-center gap-2 px-5 py-3 overflow-hidden font-medium text-white transition-all duration-300 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 hover:shadow-lg hover:shadow-purple-500/25 hover:scale-105 active:scale-95 group"

@@ -10,7 +10,7 @@ import React, {
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
 
@@ -200,6 +200,53 @@ const AuthProvider = ({ children }) => {
       onSettled: () => helpers?.setSubmitting(false),
     });
   };
+// ================== PROFILE ==================
+const getProfile = async ()=>{
+  try {
+    const {data}= await axios.get(`${baseURL}/auth/me`,{
+      headers:{
+        Authorization:`Bearer ${Cookies.get("accessToken")}`
+      }
+    })
+    return data?.data
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+const {data:profile}=useQuery({
+queryKey:["profile"],
+  queryFn:getProfile
+})
+
+// ================== LOGOUT ==================
+const handleLogout = () => {
+  try {
+    const {data}= axios.post(`${baseURL}/auth/logout`,{
+      headers:{
+        Authorization:`Bearer ${Cookies.get("accessToken")}`
+      }
+    })
+    return data
+  } catch (error) {
+    throw error
+  }
+}
+const handleLogoutMutation = useMutation({
+  mutationKey:["logout"],
+  mutationFn:handleLogout,
+  onSuccess:(data)=>{
+    toast.success(data?.message || "تم تسجيل الخروج بنجاح");
+    Cookies.remove("accessToken");
+    Cookies.remove("refreshToken");
+    router.push("/");
+  },onError:(err)=>{
+    toast.error(err?.response?.data?.message || "فشل تسجيل الخروج")
+  }
+})
+const handleLogoutFun=()=>{
+  handleLogoutMutation.mutate()
+}
 
   /* ================== CONTEXT ================== */
   return (
@@ -210,6 +257,8 @@ const AuthProvider = ({ children }) => {
         initialValues,
         loading,
         axiosInstance,
+        profile,
+        handleLogoutFun
       }}
     >
       {children}
