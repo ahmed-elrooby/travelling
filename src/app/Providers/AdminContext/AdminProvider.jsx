@@ -1,12 +1,14 @@
 "use client";
 import axios from 'axios';
-import React, { createContext } from 'react'
+import React, { createContext, useState } from 'react'
 import Cookies from "js-cookie"
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 
 export const Admin = createContext()
 const AdminProvider = ({children}) => {
     const baseurl = process.env.NEXT_PUBLIC_API
+    const [loadd,setLoadd]=useState(false)
 
     //cards//
 const getCards = async () => {
@@ -52,7 +54,23 @@ const {data:flights} = useQuery({
 })
 
 
-
+// flight section 
+const handleGetFlights = async () => {
+  try {
+    const {data} = await axios.get(`${baseurl}/bookings/flights`,{
+      headers:{
+        Authorization:`Bearer ${Cookies.get("accessToken")}`
+      }
+    })
+    return data
+  } catch (error) {
+    throw error
+  }
+}
+const {data:flightSection} = useQuery({
+  queryKey:["flightSection"],
+  queryFn:handleGetFlights
+})
 //Hotel
 const getHotel = async () => {
   try {
@@ -153,8 +171,100 @@ const {data:B2C} = useQuery({
 queryFn:getB2C
 })
 
+const handleAddFlightBooking = async (values)=>{
+  try {
+    setLoadd(true)
+    const {data}= await axios.post(`${baseurl}/bookings/flights`,values,{
+      headers:{
+        Authorization:`Bearer ${Cookies.get("accessToken")}`
+      }
+    })
+    console.log(data)
+    return data
+    
+  } catch (error) {
+    throw error
+  }finally{
+    setLoadd(false)
+}
+
+}
+const [openAddFlight,setOpenAddFlight]=useState(false)
+const flightQuery=useQueryClient()
+const handleAddFlightMutation = useMutation({
+  mutationKey:["addFlight"],
+  mutationFn:handleAddFlightBooking,
+  onSuccess:(data)=>{
+  
+    toast.success(data.message)
+    flightQuery.invalidateQueries(["flightSection"]),
+    setOpenAddFlight(false)
+  },
+  onError:(error)=>{
+    console.log(error?.response)
+    toast.error(error.response.data.message)
+  }
+})
+const handleAddFlight=(values)=>{
+  console.log(values)
+  handleAddFlightMutation.mutate(values)
+}
+const handleAddCarsSection = async (values)=>{
+  try {
+    setLoadd(true)
+    const {data}= await axios.post(`${baseurl}/bookings/cars`,values,{
+      headers:{
+        Authorization:`Bearer ${Cookies.get("accessToken")}`
+      }
+    })
+    return data
+  } catch (error) {
+    throw error
+  }finally{
+    setLoadd(false)
+  }
+}
+
+const [openAddCar,setOpenAddCar]=useState(false)
+const carsQueryClient = useQueryClient()
+const handleAddCarsMutation = useMutation({
+  mutationKey:["addCars"],
+  mutationFn:handleAddCarsSection,
+  onSuccess:(data)=>{
+    toast.success(data?.message)
+    carsQueryClient.invalidateQueries(["Cars","flightSection"]),
+    setOpenAddCar(false)
+  },onError:(err)=>{
+    toast.error(err?.response?.data?.message)
+    console.log(err?.response)
+  }
+
+})
+const handleAddCarFinal = (values)=>{
+  console.log(values)
+  handleAddCarsMutation.mutate(values)
+}
+const getCarsSection = async()=>{
+  try {
+    const {data}= await axios.get(`${baseurl}/bookings/cars`,{
+      headers:{
+        Authorization:`Bearer ${Cookies.get("accessToken")}`
+      }
+    })
+    return data?.data
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+const {data:carsSection}=useQuery({
+  queryKey:["carsSection"],
+  queryFn:getCarsSection
+})
   return (
-    <Admin.Provider value={{overview, flights, Hotel, Cars, Users, B2B, B2C}} >
+    <Admin.Provider value={{overview, flights,flightSection, Hotel, Cars,
+     Users, B2B, B2C,handleAddFlight,loadd,setOpenAddFlight,
+     openAddFlight,setOpenAddCar,openAddCar,handleAddCarFinal,carsSection}} >
       {children}
     </Admin.Provider>
   )

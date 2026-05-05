@@ -1,61 +1,66 @@
-import React from 'react'
+"use client"
+import { Agent } from '@/app/Providers/AgentContext/AgentProvider'
+import React, { useContext } from 'react'
 import { FaArrowUp, FaArrowDown, FaCalendarCheck, FaChartLine, FaPercent, FaUserPlus, FaUsers } from 'react-icons/fa'
 
 const Cards = () => {
-    const cardsData = [
-        {
-            id: 1,
-            title: "إجمالي الحجوزات",
-            value: "292",
-            unit: "",
-            change: "+18%",
-            changeType: "up",
-            comparison: "عن الشهر الماضي",
-            icon: FaCalendarCheck,
-            color: "purple",
-            progress: "100",
-            delay: "100"
-        },
-        {
-            id: 2,
-            title: "إجمالي المبيعات",
-            value: "142.8",
-            unit: "k$",
-            change: "+12%",
-            changeType: "up",
-            comparison: "عن الشهر الماضي",
-            icon: FaChartLine,
-            color: "green",
-            progress: "75",
-            delay: "200"
-        },
-        {
-            id: 3,
-            title: "العمولات المستحقة",
-            value: "21,420",
-            unit: "$",
-            change: "15%",
-            changeType: "neutral",
-            comparison: "نسبة العمولة",
-            icon: FaPercent,
-            color: "yellow",
-            progress: "66",
-            delay: "300"
-        },
-        {
-            id: 4,
-            title: "العملاء النشطون",
-            value: "156",
-            unit: "",
-            change: "+12",
-            changeType: "up",
-            comparison: "هذا الشهر",
-            icon: FaUsers,
-            color: "blue",
-            progress: "50",
-            delay: "400"
-        }
-    ]
+    const {overview} = useContext(Agent)
+    console.log(overview)
+const kpis = overview?.data?.kpis;
+  const cardsData = [
+    {
+        id: 1,
+        title: "إجمالي الإيرادات",
+        value: kpis?.totalRevenue || 0,
+        unit: "$",
+        change: "+0%",
+        changeType: "up",
+        comparison: "عن الشهر الماضي",
+        icon: FaChartLine,
+        color: "green",
+        progress: "80",
+        delay: "100"
+    },
+    {
+        id: 2,
+        title: "إجمالي العمولات",
+        value: kpis?.totalCommission || 0,
+        unit: "$",
+        change: "+0%",
+        changeType: "up",
+        comparison: "عن الشهر الماضي",
+        icon: FaPercent,
+        color: "yellow",
+        progress: "60",
+        delay: "200"
+    },
+    {
+        id: 3,
+        title: "عدد الشركات",
+        value: kpis?.totalAgencies || 0,
+        unit: "",
+        change: "+0",
+        changeType: "up",
+        comparison: "هذا الشهر",
+        icon: FaUsers,
+        color: "blue",
+        progress: "50",
+        delay: "300"
+    },
+    {
+        id: 4,
+        title: "متوسط العمولة",
+        value: kpis?.avgCommissionRate || 0,
+        unit: "%",
+        change: "ثابت",
+        changeType: "neutral",
+        comparison: "متوسط",
+        icon: FaPercent,
+        color: "purple",
+        progress: "70",
+        delay: "400"
+    }
+];
 
     const colorStyles = {
         purple: {

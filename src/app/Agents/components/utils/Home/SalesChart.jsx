@@ -1,5 +1,7 @@
 "use client";
 
+import { Agent } from "@/app/Providers/AgentContext/AgentProvider";
+import { useContext } from "react";
 import {
   LineChart,
   Line,
@@ -11,32 +13,42 @@ import {
   Legend,
 } from "recharts";
 
-const data = [
-  { name: "يناير", sales: 120, orders: 80 },
-  { name: "فبراير", sales: 150, orders: 95 },
-  { name: "مارس", sales: 140, orders: 90 },
-  { name: "أبريل", sales: 180, orders: 110 },
-  { name: "مايو", sales: 220, orders: 130 },
-  { name: "يونيو", sales: 200, orders: 125 },
-];
-
 export default function SalesChart() {
+  const { overview } = useContext(Agent);
+
+  // ✅ تحويل الداتا من API
+  const chartData =
+    overview?.data?.topAgencies?.map((item) => ({
+      name: item.name,
+      sales: item.sales,
+      orders: Math.floor(item.sales * 0.7), // مؤقت
+    })) || [];
+
+  // ✅ loading
+  if (!overview) {
+    return (
+      <div className="text-center text-gray-400">
+        جاري تحميل البيانات...
+      </div>
+    );
+  }
+
   return (
     <div className="w-full h-[600px] bg-[#0f0c29] p-6 rounded-2xl shadow-lg border border-white/10">
       
       {/* Title */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold text-white">
-          📊 المبيعات الشهرية
+          📊 أعلى الشركات مبيعًا
         </h2>
 
         <div className="text-sm text-gray-400">
-          تحليل الأداء
+          من بيانات API
         </div>
       </div>
 
       <ResponsiveContainer width="100%" height="80%">
-        <LineChart data={data}>
+        <LineChart data={chartData}>
           
           <CartesianGrid stroke="#2a2a40" strokeDasharray="3 3" />
           

@@ -1,11 +1,11 @@
 import React from 'react'
+import ClientsProviders from '../Providers/ClientContext/ClientsProviders'
 import Aside from './components/Aside/Aside'
-import AgentProvider from '../Providers/AgentContext/AgentProvider'
 
 const layout = ({ children }) => {
   return (
     <>
-    <AgentProvider>
+    <ClientsProviders>
     <section className="flex h-screen transition-all duration-300">
         <Aside/>
 
@@ -26,7 +26,7 @@ const layout = ({ children }) => {
         </section>
       </section>
 
-    </AgentProvider>
+    </ClientsProviders>
   
     </>
   )

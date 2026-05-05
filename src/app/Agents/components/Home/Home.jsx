@@ -10,15 +10,13 @@ const Home = () => {
   return <>
   <Header/>
   <Cards/>
-  <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+  <div className='grid grid-cols-1 gap-4 my-6 md:grid-cols-2'>
     <SalesChart/>
     <BookingChart/>
   </div>
 
-  <div className='grid grid-cols-1 gap-4 mt-6 md:grid-cols-3 '>
     <RecentBooking/>
-    <Notifications/>
-  </div>
+    
   </>
 }
 

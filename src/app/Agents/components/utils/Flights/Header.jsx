@@ -34,15 +34,7 @@ const Header = ({
                 </div>
 
                 {/* Action Button */}
-                <div className="flex-shrink-0">
-                    <button 
-                        onClick={onAddBooking}
-                        className="px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all duration-300 hover:scale-105 bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg hover:shadow-purple-500/25"
-                    >
-                        <FaPlusCircle className="text-lg" />
-                        <span>حجز جديد</span>
-                    </button>
-                </div>
+            
             </div>
         </div>
     )
