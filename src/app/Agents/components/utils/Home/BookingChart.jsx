@@ -14,21 +14,21 @@ export default function BookingChart() {
   const { booking } = useContext(Agent);
 
   // ✅ تحويل الداتا من API
-  const chartData = booking?.data
+  const chartData = booking
     ? [
         {
           name: "طيران",
-          value: booking.data.flights.length,
+          value: booking.flights.length,
           color: "#8b5cf6",
         },
         {
           name: "فنادق",
-          value: booking.data.hotels.length,
+          value: booking.hotels.length,
           color: "#ec4899",
         },
         {
           name: "سيارات",
-          value: booking.data.cars.length,
+          value: booking.cars.length,
           color: "#3b82f6",
         },
       ]
@@ -47,7 +47,7 @@ export default function BookingChart() {
   }
 
   return (
-    <div className="w-full mx-auto bg-[#0f0c29] p-6 rounded-2xl shadow-lg">
+    <div className="w-full mx-auto bg-[#0f0c29] p-2 md:p-6 rounded-2xl shadow-lg">
       
       {/* Title */}
       <div className="flex items-center justify-between mb-6">

@@ -4,7 +4,6 @@ import Cards from '../utils/Home/Cards'
 import SalesChart from '../utils/Home/SalesChart'
 import BookingChart from '../utils/Home/BookingChart'
 import RecentBooking from '../utils/Home/RecentBooking'
-import Notifications from '../utils/Home/Notifications'
 
 const Home = () => {
   return <>

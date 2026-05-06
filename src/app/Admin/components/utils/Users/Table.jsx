@@ -4,16 +4,17 @@ import { Admin } from "@/app/Providers/AdminContext/AdminProvider";
 import { useContext, useState, useMemo } from "react";
 import { FaEdit, FaEllipsisV, FaEye, FaSearch, FaToggleOn, FaTrash, FaUndoAlt } from "react-icons/fa";
 import Details from "./Details";
+import UpdateUser from "./UpdateUser";
 
 export default function UsersFilter() {
   const [user, setUser] = useState(null);  
   const [details, setDetails] = useState(false);  
   const [openMenu, setOpenMenu] = useState(null);
-  const { Users, User,deleteUserFun } = useContext(Admin);
+  const { Users, User,deleteUserFun,openUpdateUser,setOpenUpdateUser,handleChangeStatus } = useContext(Admin);
   console.log(User)
   
   // Users is the array from the response: Users.data.data
-  const usersData = User?.data || [];
+  const usersData = User?.data .filter(user => user.role !== "admin")|| [];
 
   const [search, setSearch] = useState("");
   const [role, setRole] = useState("all");
@@ -112,25 +113,26 @@ export default function UsersFilter() {
       </div>
 
       }
+     {
+      openUpdateUser && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"> 
+      <UpdateUser user={user} openUpdateUser={openUpdateUser} setOpenUpdateUser={setOpenUpdateUser}/>
+      </div>
+     }
       <div
         data-aos="fade-up"
-        className="
-          rounded-2xl p-4 sm:p-6 mb-8
-          bg-white/5 backdrop-blur-md
-          border border-white/10
-        "
+        className="p-4 mb-8 border rounded-2xl sm:p-6 bg-white/5 backdrop-blur-md border-white/10"
       >
         {/* ===== Filters ===== */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
           {/* Search */}
           <div>
-            <label className="block text-gray-400 text-sm mb-2">
+            <label className="block mb-2 text-sm text-gray-400">
               بحث
             </label>
 
             <div className="relative">
-              <FaSearch className="absolute right-3 top-3 text-purple-400 text-sm" />
+              <FaSearch className="absolute text-sm text-purple-400 right-3 top-3" />
 
               <input
                 type="text"
@@ -150,7 +152,7 @@ export default function UsersFilter() {
 
           {/* Role */}
           <div>
-            <label className="block text-gray-400 text-sm mb-2">
+            <label className="block mb-2 text-sm text-gray-400">
               نوع المستخدم
             </label>
 
@@ -161,7 +163,7 @@ export default function UsersFilter() {
                 w-full bg-white/5
                 border border-purple-500/30
                 rounded-xl px-4 py-2.5
-                text-white
+               
                 focus:outline-none
               "
             >
@@ -174,7 +176,7 @@ export default function UsersFilter() {
 
           {/* Status */}
           <div>
-            <label className="block text-gray-400 text-sm mb-2">
+            <label className="block mb-2 text-sm text-gray-400">
               الحالة
             </label>
 
@@ -185,7 +187,7 @@ export default function UsersFilter() {
                 w-full bg-white/5
                 border border-purple-500/30
                 rounded-xl px-4 py-2.5
-                text-white
+                
                 focus:outline-none
               "
             >
@@ -215,7 +217,7 @@ export default function UsersFilter() {
         </div>
 
         {/* ===== Chips ===== */}
-        <div className="flex flex-wrap gap-2 mt-5 pt-4 border-t border-purple-500/20">
+        <div className="flex flex-wrap gap-2 pt-4 mt-5 border-t border-purple-500/20">
           {chips.map((chip) => (
             <span
               key={chip.value}
@@ -239,7 +241,7 @@ export default function UsersFilter() {
       </div>
 
       {/* ===== Results Summary ===== */}
-      <div className="mb-4 text-gray-400 text-sm">
+      <div className="mb-4 text-sm text-gray-400">
         عرض {filteredUsers.length} من {usersData.length} مستخدم
         {search && ` - بحث: "${search}"`}
         {role !== "all" && ` - النوع: ${role}`}
@@ -247,7 +249,7 @@ export default function UsersFilter() {
       </div>
 
       {/* ===== Users Table ===== */}
-      <div className="overflow-x-auto rounded-xl border border-white/10 bg-white/5 backdrop-blur-md">
+      <div className="overflow-x-auto border rounded-xl border-white/10 bg-white/5 backdrop-blur-md">
         <table className="w-full text-right">
           <thead className="border-b border-white/10 bg-white/5">
             <tr>
@@ -261,7 +263,7 @@ export default function UsersFilter() {
           </thead>
           <tbody>
             {filteredUsers.map((user) => (
-              <tr key={user.id} className="border-b border-white/5 hover:bg-white/5 transition">
+              <tr key={user.id} className="transition border-b border-white/5 hover:bg-white/5">
                 <td className="px-6 py-4 text-white">{user.name}</td>
                 <td className="px-6 py-4 text-gray-300">{user.email}</td>
                 <td className="px-6 py-4">
@@ -282,10 +284,10 @@ export default function UsersFilter() {
                     {user.status === "active" ? "نشط" : "غير نشط"}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-gray-400 text-sm">
+                <td className="px-6 py-4 text-sm text-gray-400">
                   {new Date(user.createdAt).toLocaleDateString("ar-EG")}
                 </td>
-                <td className="px-6 py-4 relative">
+                <td className="relative px-6 py-4">
   <button
     onClick={() => setOpenMenu(openMenu === user.id ? null : user.id)}
     className="text-gray-300 hover:text-white"
@@ -303,7 +305,7 @@ export default function UsersFilter() {
           setDetails(true);
           setOpenMenu(null);
         }}
-        className="w-full flex items-center gap-2 px-4 py-2 text-sm hover:bg-white/10 text-gray-300"
+        className="flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-white/10"
       >
         <FaEye/> عرض
       </button>
@@ -311,24 +313,16 @@ export default function UsersFilter() {
       {/* تعديل */}
       <button
         onClick={() => {
-          console.log("Edit", user);
+          setUser(user)
+          setOpenUpdateUser(true)
           setOpenMenu(null);
         }}
-        className="w-full flex items-center gap-2 px-4 py-2 text-sm hover:bg-white/10 text-blue-300"
+        className="flex items-center w-full gap-2 px-4 py-2 text-sm text-blue-300 hover:bg-white/10"
       >
         <FaEdit /> تعديل
       </button>
 
-      {/* تغيير الحالة */}
-      <button
-        onClick={() => {
-          console.log("Toggle Status", user);
-          setOpenMenu(null);
-        }}
-        className="w-full flex items-center gap-2 px-4 py-2 text-sm hover:bg-white/10 text-yellow-300"
-      >
-        <FaToggleOn /> تغيير الحالة
-      </button>
+    
 
       {/* حذف */}
       <button
@@ -336,7 +330,7 @@ export default function UsersFilter() {
           setOpenMenu(null);
           
         }}
-        className="w-full flex items-center gap-2 px-4 py-2 text-sm hover:bg-red-500/20 text-red-400"
+        className="flex items-center w-full gap-2 px-4 py-2 text-sm text-red-400 hover:bg-red-500/20"
       >
         <FaTrash /> حذف
       </button>
@@ -349,7 +343,7 @@ export default function UsersFilter() {
         </table>
         
         {filteredUsers.length === 0 && (
-          <div className="text-center py-12 text-gray-400">
+          <div className="py-12 text-center text-gray-400">
             لا توجد نتائج مطابقة للبحث
           </div>
         )}
