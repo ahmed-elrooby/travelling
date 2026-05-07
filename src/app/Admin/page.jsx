@@ -1,9 +1,10 @@
 import React from "react";
-import Cards from "./components/Utils/Home/Cards";
-import Booking from "./components/Utils/Home/Booking";
-import RevenueChart from "./components/Utils/Home/RevenuesChart";
-import BookingDistribution from "./components/Utils/Home/BookingDistribution";
 import Header from "./components/Header/Header";
+import Cards from "./components/utils/Home/Cards";
+import RevenueChart from "./components/utils/Home/RevenuesChart";
+import BookingDistribution from "./components/utils/Home/BookingDistribution";
+import Booking from "./components/utils/Home/Booking";
+
 
 export const metadata = {
   title: "لوحة التحكم | نظام إدارة الحجوزات",
