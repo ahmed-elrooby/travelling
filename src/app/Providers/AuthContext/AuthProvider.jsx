@@ -10,7 +10,7 @@ import React, {
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
 
@@ -40,12 +40,6 @@ const AuthProvider = ({ children }) => {
     });
   }, [baseURL]);
 
-  /* ================== LOGOUT ================== */
-  const logout = () => {
-    Cookies.remove("accessToken");
-    Cookies.remove("refreshToken");
-    router.push("/login");
-  };
 
   /* ================== INTERCEPTORS ================== */
   useEffect(() => {
@@ -143,6 +137,23 @@ const AuthProvider = ({ children }) => {
   }, [axiosInstance]);
 
   /* ================== LOGIN ================== */
+  const getProfile = async ()=>{
+  try {
+    const {data}= await axios.get(`${baseURL}/auth/me`,{
+      headers:{
+        Authorization:`Bearer ${Cookies.get("accessToken")}`
+      }
+    })
+    return data?.data
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+const {data:profile}=useQuery({
+queryKey:["profile"],
+  queryFn:getProfile
+})
   const loginRequest = async (values) => {
     setLoading(true);
 
@@ -162,19 +173,17 @@ const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   };
-
+const profileQuery=useQueryClient()
   const handleLoginMutation = useMutation({
     mutationKey: ["login"],
     mutationFn: loginRequest,
 
     onSuccess: (data) => {
       toast.success("تم تسجيل الدخول بنجاح");
-
+profileQuery.invalidateQueries(["profile"])
       const accessToken = data?.data?.accessToken;
-      const refreshToken = data?.data?.refreshToken;
 
       Cookies.set("accessToken", accessToken);
-      Cookies.set("refreshToken", refreshToken);
 
       const role = data?.data?.user?.role;
 
@@ -201,23 +210,7 @@ const AuthProvider = ({ children }) => {
     });
   };
 // ================== PROFILE ==================
-const getProfile = async ()=>{
-  try {
-    const {data}= await axios.get(`${baseURL}/auth/me`,{
-      headers:{
-        Authorization:`Bearer ${Cookies.get("accessToken")}`
-      }
-    })
-    return data?.data
-  } catch (error) {
-    console.log(error)
-    throw error
-  }
-}
-const {data:profile}=useQuery({
-queryKey:["profile"],
-  queryFn:getProfile
-})
+
 
 // ================== LOGOUT ==================
 const handleLogout = () => {
@@ -238,7 +231,6 @@ const handleLogoutMutation = useMutation({
   onSuccess:(data)=>{
     toast.success(data?.message || "تم تسجيل الخروج بنجاح");
     Cookies.remove("accessToken");
-    Cookies.remove("refreshToken");
     router.push("/");
   },onError:(err)=>{
     toast.error(err?.response?.data?.message || "فشل تسجيل الخروج")

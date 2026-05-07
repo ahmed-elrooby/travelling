@@ -23,11 +23,11 @@ export default function HotelBookingsHeader() {
         <div>
           {/* Breadcrumb */}
           <div className="flex flex-wrap items-center gap-2 mb-3 text-sm text-gray-400">
-            <a href="#" className="transition-all duration-300 hover:text-purple-400 hover:translate-x-0.5">
+            <a href="/Admin" className="transition-all duration-300 hover:text-purple-400 hover:translate-x-0.5">
               الرئيسية
             </a>
             <FaChevronLeft className="text-xs text-gray-500" />
-            <a href="#" className="transition-all duration-300 hover:text-purple-400 hover:translate-x-0.5">
+            <a href="/Admin/HotelPage" className="transition-all duration-300 hover:text-purple-400 hover:translate-x-0.5">
               الحجوزات
             </a>
             <FaChevronLeft className="text-xs text-gray-500" />

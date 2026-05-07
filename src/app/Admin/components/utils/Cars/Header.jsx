@@ -4,6 +4,7 @@ import { FaChevronLeft, FaPlusCircle, FaCar, FaBell, FaChartLine, FaCalendarAlt 
 import { useContext, useState } from "react";
 import { Admin } from "@/app/Providers/AdminContext/AdminProvider";
 import AddCarBooking from "./AddCars";
+import Link from "next/link";
 
 export default function CarRentalHeader() {
   const [isHovered, setIsHovered] = useState(false);
@@ -20,13 +21,13 @@ export default function CarRentalHeader() {
         <div>
           {/* Breadcrumb */}
           <div className="flex flex-wrap items-center gap-2 mb-3 text-sm text-gray-400">
-            <a href="#" className="transition-all duration-300 hover:text-purple-400 hover:translate-x-0.5">
+            <Link href="/Admin" className="transition-all duration-300 hover:text-purple-400 hover:translate-x-0.5">
               الرئيسية
-            </a>
+            </Link>
             <FaChevronLeft className="text-xs text-gray-500" />
-            <a href="#" className="transition-all duration-300 hover:text-purple-400 hover:translate-x-0.5">
+            <Link href="/Admin/CarsPage" className="transition-all duration-300 hover:text-purple-400 hover:translate-x-0.5">
               الحجوزات
-            </a>
+            </Link>
             <FaChevronLeft className="text-xs text-gray-500" />
             <span className="font-semibold text-transparent bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text">
               السيارات والتأجير

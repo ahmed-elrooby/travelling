@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from 'react';
+import { Clients } from '@/app/Providers/ClientContext/ClientsProviders';
+import React, { useContext, useState } from 'react';
 import { 
   FaPlane, 
   FaHotel, 
@@ -29,7 +30,8 @@ import { MdFlightTakeoff, MdFlightLand } from 'react-icons/md';
 const MyBookings = () => {
   const [activeTab, setActiveTab] = useState('all');
   const [selectedBooking, setSelectedBooking] = useState(null);
-
+const {myBooking}=useContext(Clients)
+console.log(myBooking)
   // Static bookings data
   const bookings = [
     {

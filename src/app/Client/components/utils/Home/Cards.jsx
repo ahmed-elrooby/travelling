@@ -1,6 +1,7 @@
 "use client";
 
-import React from 'react';
+import { Clients } from '@/app/Providers/ClientContext/ClientsProviders';
+import React, { useContext } from 'react';
 import { 
   FaCalendarCheck, 
   FaDollarSign, 
@@ -10,6 +11,8 @@ import {
 } from 'react-icons/fa';
 
 const Cards = () => {
+  const {overview} = useContext(Clients)
+  console.log(overview)
   const stats = [
     {
       title: "إجمالي الحجوزات",

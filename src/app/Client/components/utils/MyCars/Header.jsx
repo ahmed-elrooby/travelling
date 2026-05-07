@@ -22,20 +22,17 @@ import {
   FaHeadset,
   FaTicketAlt
 } from 'react-icons/fa';
-import AddBooking from './AddBooking';
-import { Clients } from '@/app/Providers/ClientContext/ClientsProviders';
 
 const Header = () => {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [currentTime, setCurrentTime] = useState('');
-  const {openAddFlight,setOpenAddFlight}=useContext(Clients)
   const pathname = usePathname();
   
   // Get page title from pathname
   const getPageTitle = () => {
     const path = pathname?.split('/').pop() || '';
     const titles = {
-      'MyBookingPage': 'حجوزاتي',
+      'CarsPage': 'سياراتي',
       'ProfilePage': 'الملف الشخصي',
       'Dashboard': 'لوحة التحكم',
       'Offers': 'العروض',
@@ -62,34 +59,13 @@ const Header = () => {
     return Icon ? <Icon className="text-purple-400" /> : <FaHome className="text-purple-400" />;
   };
   
-  // Update current time
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      const timeString = now.toLocaleTimeString('ar-EG', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        hour12: true 
-      });
-      setCurrentTime(timeString);
-    };
-    
-    updateTime();
-    const interval = setInterval(updateTime, 60000);
-    return () => clearInterval(interval);
-  }, []);
+
   
-  // Toggle theme function
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle('light-mode');
-  };
+ 
   
   return (
     <>
-    {
-      openAddFlight && (<AddBooking/>)
-    }
+   
       <div className="relative mb-8">
         {/* Animated Background Effect */}
         <div className="absolute inset-0 overflow-hidden rounded-2xl">
@@ -147,9 +123,7 @@ const Header = () => {
             
             {/* Add Booking Button - Always visible with multiple styles */}
             <button 
-            onClick={()=>{
-              setOpenAddFlight(true)
-            }}
+          
               className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white transition-all duration-300 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 hover:scale-105 shadow-lg shadow-purple-500/25 group"
             >
               <FaPlus className="text-sm transition-transform duration-300 group-hover:rotate-90" />
@@ -160,10 +134,7 @@ const Header = () => {
          
             
             {/* Quick Stats - Time */}
-            <div className="hidden px-3 py-2 border rounded-xl bg-gray-800/50 border-purple-500/20 lg:block">
-              <p className="text-xs text-gray-400">التوقيت المحلي</p>
-              <p className="text-sm font-medium text-white">{currentTime}</p>
-            </div>
+            
           </div>
         </div>
       </div>

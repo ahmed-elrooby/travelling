@@ -10,16 +10,17 @@ import {
 } from "react-icons/fa";
 
 export default function UsersStats() {
-  const { Users } = useContext(Admin);
+  const { Users,User } = useContext(Admin);
 
   console.log(Users);
-
+const b2bUser = User?.data?.filter(user => user.role === "b2b");
+const b2cUser = User?.data?.filter(user => user.role === "b2c");
   const kpis = Users?.data?.kpis;
 
   const stats = [
     {
       title: "إجمالي المستخدمين",
-      value: kpis?.totalUsers || 0,
+      value:User?.data?.length - 1 || 0,
       icon: FaUsers,
       iconColor: "text-purple-400",
       bg: "bg-purple-500/20",
@@ -27,7 +28,7 @@ export default function UsersStats() {
     },
     {
       title: "الوكلاء B2B",
-      value: kpis?.b2bUsers || 0,
+      value: b2bUser?.length || 0,
       icon: FaBuilding,
       iconColor: "text-pink-400",
       bg: "bg-pink-500/20",
@@ -35,7 +36,7 @@ export default function UsersStats() {
     },
     {
       title: "العملاء B2C",
-      value: kpis?.b2cUsers || 0,
+      value: b2cUser?.length || 0,
       icon: FaUserFriends,
       iconColor: "text-green-400",
       bg: "bg-green-500/20",
@@ -52,7 +53,7 @@ export default function UsersStats() {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 mb-8">
+    <div className="grid grid-cols-1 gap-4 mb-8 sm:grid-cols-2 xl:grid-cols-4 sm:gap-6">
 
       {stats.map((item, index) => {
         const Icon = item.icon;
@@ -69,15 +70,15 @@ export default function UsersStats() {
               hover:scale-[1.02] transition-all duration-300
             "
           >
-            <div className="flex justify-between items-center">
+            <div className="flex items-center justify-between">
 
               {/* TEXT */}
               <div>
-                <p className="text-gray-400 text-xs sm:text-sm">
+                <p className="text-xs text-gray-400 sm:text-sm">
                   {item.title}
                 </p>
 
-                <p className="text-2xl sm:text-3xl font-bold text-white mt-1">
+                <p className="mt-1 text-2xl font-bold text-white sm:text-3xl">
                   {item.value}
                 </p>
               </div>

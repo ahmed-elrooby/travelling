@@ -34,7 +34,7 @@ export default function SalesChart() {
   }
 
   return (
-    <div className="w-full h-[600px] bg-[#0f0c29] p-6 rounded-2xl shadow-lg border border-white/10">
+    <div className="w-full h-[600px] bg-[#0f0c29] p-2 md:p-6 rounded-2xl shadow-lg border border-white/10">
       
       {/* Title */}
       <div className="flex items-center justify-between mb-6">

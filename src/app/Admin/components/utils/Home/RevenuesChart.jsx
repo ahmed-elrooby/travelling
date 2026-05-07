@@ -24,19 +24,19 @@ export default function RevenueChart() {
   const chartData = [
     {
       name: "إجمالي الحجوزات",
-      value: data.kpis.totalBookings.total,
+      value: data?.kpis?.totalBookings?.total,
     },
     {
       name: "B2C العملاء",
-      value: data.kpis.b2cCustomers.total,
+      value: data?.kpis?.b2cCustomers?.total,
     },
     {
       name: "B2B الوكلاء",
-      value: data.kpis.b2bAgencies.total,
+      value: data?.kpis?.b2bAgencies?.total,
     },
     {
       name: "الأرباح",
-      value: data.kpis.totalProfit.total,
+      value: data?.kpis?.totalProfit?.total,
     },
   ];
 
@@ -53,12 +53,12 @@ export default function RevenueChart() {
       "
     >
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-2">
-        <h2 className="text-lg sm:text-xl font-bold text-white">
+      <div className="flex flex-col justify-between gap-2 mb-6 sm:flex-row sm:items-center">
+        <h2 className="text-lg font-bold text-white sm:text-xl">
           📊 نظرة عامة على الأداء
         </h2>
 
-        <p className="text-xs sm:text-sm text-gray-400">
+        <p className="text-xs text-gray-400 sm:text-sm">
           {data.greeting?.subtitle}
         </p>
       </div>

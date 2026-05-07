@@ -1,62 +1,68 @@
 "use client";
 
-import React, { useContext, useRef } from "react";
+import React, { useContext } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Admin } from "@/app/Providers/AdminContext/AdminProvider";
-import { FaCalendarAlt, FaCar, FaExchangeAlt, FaFlagCheckered, FaMoneyBillWave, FaPlus, FaTimes } from "react-icons/fa";
-import { FaLocationDot } from "react-icons/fa6";
+import { 
+  FaHotel, 
+  FaCity, 
+  FaCalendarAlt, 
+  FaUsers, 
+  FaMoneyBillWave, 
+  FaTimes, 
+  FaPlus,
+  FaCheckCircle,
+  FaSpinner
+} from "react-icons/fa";
+import { Agent } from "@/app/Providers/AgentContext/AgentProvider";
 
+// 🔥 function لتوليد ID ديناميك
+const generateId = () => {
+  return "H-" + Math.floor(10000 + Math.random() * 90000);
+};
 
-const AddCarBooking = () => {
-  const { setOpenAddCar, openAddCar, loadd, handleAddCarFinal } = useContext(Admin);
-
-  const counterRef = useRef(40000);
-
-  const generateId = () => {
-    counterRef.current += 1;
-    return `C-${counterRef.current}`;
-  };
-
+const AddHotel = () => {
+  const { openHotels, setOpenHotels, handleAddHotelFinal, loading } = useContext(Agent);
+  
   const initialValues = {
-    car: "",
-    fromCity: "",
-    toCity: "",
-    pickupDate: "",
-    returnDate: "",
+    hotel: "",
+    city: "",
+    checkIn: "",
+    checkOut: "",
+    guests: "",
     price: "",
     status: "pending",
   };
 
   const validationSchema = Yup.object({
-    car: Yup.string().required("نوع العربية مطلوب"),
-    fromCity: Yup.string().required("مدينة الاستلام مطلوبة"),
-    toCity: Yup.string().required("مدينة التسليم مطلوبة"),
-    pickupDate: Yup.date().required("تاريخ الاستلام مطلوب"),
-    returnDate: Yup.date()
-      .required("تاريخ الرجوع مطلوب")
-      .min(Yup.ref("pickupDate"), "تاريخ الرجوع يجب أن يكون بعد تاريخ الاستلام"),
+    hotel: Yup.string().required("اسم الفندق مطلوب"),
+    city: Yup.string().required("المدينة مطلوبة"),
+    checkIn: Yup.date().required("تاريخ الوصول مطلوب"),
+    checkOut: Yup.date()
+      .required("تاريخ المغادرة مطلوب")
+      .min(Yup.ref('checkIn'), "تاريخ المغادرة يجب أن يكون بعد تاريخ الوصول"),
+    guests: Yup.string().required("عدد النزلاء مطلوب"),
     price: Yup.number()
       .required("السعر مطلوب")
-      .positive("السعر لازم يكون موجب"),
-    status: Yup.string().required("الحالة مطلوبة"),
+      .positive("السعر يجب أن يكون أكبر من 0"),
   });
 
-  const handleSubmit = (values, { resetForm, setSubmitting }) => {
-    const newBooking = {
+  const handleSubmit = async (values, { resetForm, setSubmitting }) => {
+    const data = {
       id: generateId(),
       ...values,
-      price: Number(values.price),
       updatedAt: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
-      customer: "أحمد محمد",
+      customer: "أحمد محمد", // You can make this dynamic
+      userId: null
     };
 
-    handleAddCarFinal(newBooking);
+    await handleAddHotelFinal(data);
     resetForm();
     setSubmitting(false);
   };
 
-  if (!openAddCar) return null;
+  if (!openHotels) return null;
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
@@ -67,17 +73,17 @@ const AddCarBooking = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-xl bg-purple-500/20">
-                <FaCar className="text-2xl text-purple-400" />
+                <FaHotel className="text-2xl text-purple-400" />
               </div>
               <div>
                 <h2 className="text-2xl font-bold text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text">
-                  إضافة حجز سيارة جديد
+                  إضافة حجز فندق جديد
                 </h2>
-                <p className="text-sm text-gray-400">أدخل بيانات حجز السيارة لإضافته إلى النظام</p>
+                <p className="text-sm text-gray-400">أدخل بيانات الحجز لإضافته إلى النظام</p>
               </div>
             </div>
             <button
-              onClick={() => setOpenAddCar(false)}
+              onClick={() => setOpenHotels(false)}
               className="p-2 transition-all duration-300 rounded-xl hover:bg-gray-800/50 group"
             >
               <FaTimes className="text-gray-400 transition-colors group-hover:text-purple-400" />
@@ -91,113 +97,90 @@ const AddCarBooking = () => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ isSubmitting, values }) => (
+          {({ isSubmitting, values, setFieldValue }) => (
             <Form className="p-6">
               <div className="grid gap-5 md:grid-cols-2">
                 
-                {/* Car Type */}
+                {/* Hotel Name */}
                 <div className="space-y-1">
                   <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
-                    <FaCar className="text-purple-400" />
-                    نوع السيارة
+                    <FaHotel className="text-purple-400" />
+                    اسم الفندق
                   </label>
                   <Field
-                    name="car"
-                    placeholder="مثال: تويوتا كامري 2024"
+                    name="hotel"
+                    placeholder="مثال: فندق بوتيك السخنة"
                     className="w-full px-4 py-2.5 bg-gray-800/50 border border-purple-500/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all duration-300"
                   />
-                  <ErrorMessage name="car" component="div" className="mt-1 text-xs text-red-400" />
+                  <ErrorMessage name="hotel" component="div" className="mt-1 text-xs text-red-400" />
                 </div>
 
-                {/* From City */}
+                {/* City */}
                 <div className="space-y-1">
                   <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
-                    <FaLocationDot className="text-purple-400" />
-                    مدينة الاستلام
+                    <FaCity className="text-purple-400" />
+                    المدينة
                   </label>
                   <Field
-                    name="fromCity"
-                    placeholder="مثال: الرياض"
+                    name="city"
+                    placeholder="مثال: العين السخنة - مصر"
                     className="w-full px-4 py-2.5 bg-gray-800/50 border border-purple-500/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all duration-300"
                   />
-                  <ErrorMessage name="fromCity" component="div" className="mt-1 text-xs text-red-400" />
+                  <ErrorMessage name="city" component="div" className="mt-1 text-xs text-red-400" />
                 </div>
 
-                {/* To City */}
-                <div className="space-y-1">
-                  <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
-                    <FaFlagCheckered className="text-pink-400" />
-                    مدينة التسليم
-                  </label>
-                  <Field
-                    name="toCity"
-                    placeholder="مثال: جدة"
-                    className="w-full px-4 py-2.5 bg-gray-800/50 border border-purple-500/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all duration-300"
-                  />
-                  <ErrorMessage name="toCity" component="div" className="mt-1 text-xs text-red-400" />
-                </div>
-
-                {/* Exchange Route */}
-                {values.fromCity && values.toCity && values.fromCity !== values.toCity && (
-                  <div className="space-y-1 md:col-span-2">
-                    <div className="flex items-center justify-center gap-2 p-2 border bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-xl border-purple-500/20">
-                      <FaExchangeAlt className="text-purple-400" />
-                      <span className="text-sm text-gray-300">
-                        من {values.fromCity} إلى {values.toCity}
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Pickup Date */}
+                {/* Check-in Date */}
                 <div className="space-y-1">
                   <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
                     <FaCalendarAlt className="text-purple-400" />
-                    تاريخ الاستلام
+                    تاريخ الوصول
                   </label>
                   <Field
                     type="date"
-                    name="pickupDate"
+                    name="checkIn"
                     className="w-full px-4 py-2.5 bg-gray-800/50 border border-purple-500/20 rounded-xl text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all duration-300"
                   />
-                  <ErrorMessage name="pickupDate" component="div" className="mt-1 text-xs text-red-400" />
+                  <ErrorMessage name="checkIn" component="div" className="mt-1 text-xs text-red-400" />
                 </div>
 
-                {/* Return Date */}
+                {/* Check-out Date */}
                 <div className="space-y-1">
                   <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
                     <FaCalendarAlt className="text-pink-400" />
-                    تاريخ الرجوع
+                    تاريخ المغادرة
                   </label>
                   <Field
                     type="date"
-                    name="returnDate"
+                    name="checkOut"
                     className="w-full px-4 py-2.5 bg-gray-800/50 border border-purple-500/20 rounded-xl text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all duration-300"
                   />
-                  <ErrorMessage name="returnDate" component="div" className="mt-1 text-xs text-red-400" />
+                  <ErrorMessage name="checkOut" component="div" className="mt-1 text-xs text-red-400" />
                 </div>
 
-                {/* Duration Preview */}
-                {values.pickupDate && values.returnDate && (
-                  <div className="space-y-1 md:col-span-2">
-                    <div className="flex items-center justify-center gap-2 p-2 border bg-gray-800/30 rounded-xl border-purple-500/20">
-                      <span className="text-xs text-gray-400">
-                        المدة: {Math.ceil((new Date(values.returnDate) - new Date(values.pickupDate)) / (1000 * 60 * 60 * 24))} يوم
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Price */}
-                <div className="space-y-1 md:col-span-2">
+                {/* Guests */}
+                <div className="space-y-1">
                   <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
-                    <FaMoneyBillWave className="text-green-400" />
-                    السعر (ريال)
+                    <FaUsers className="text-purple-400" />
+                    عدد النزلاء
                   </label>
                   <Field
-                    name="price"
+                    name="guests"
+                    placeholder="مثال: شخصان - جناح"
+                    className="w-full px-4 py-2.5 bg-gray-800/50 border border-purple-500/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all duration-300"
+                  />
+                  <ErrorMessage name="guests" component="div" className="mt-1 text-xs text-red-400" />
+                </div>
+
+                {/* Price */}
+                <div className="space-y-1">
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
+                    <FaMoneyBillWave className="text-green-400" />
+                    السعر (دولار)
+                  </label>
+                  <Field
                     type="number"
-                    placeholder="مثال: 500"
+                    name="price"
+                    placeholder="مثال: 580"
                     className="w-full px-4 py-2.5 bg-gray-800/50 border border-purple-500/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all duration-300"
                   />
                   <ErrorMessage name="price" component="div" className="mt-1 text-xs text-red-400" />
@@ -206,7 +189,8 @@ const AddCarBooking = () => {
                 {/* Status */}
                 <div className="space-y-1 md:col-span-2">
                   <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
-                    📊 الحالة
+                    <FaCheckCircle className="text-purple-400" />
+                    حالة الحجز
                   </label>
                   <Field
                     as="select"
@@ -224,17 +208,17 @@ const AddCarBooking = () => {
               </div>
 
               {/* Preview Section */}
-              {(values.car || values.price) && (
+              {values.hotel && values.city && values.price && (
                 <div className="p-4 mt-6 border bg-gradient-to-r from-purple-500/5 to-pink-500/5 rounded-xl border-purple-500/20">
                   <p className="mb-2 text-xs text-gray-400">معاينة سريعة:</p>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <FaCar className="text-purple-400" />
-                      <span className="font-medium text-white">{values.car || 'غير محدد'}</span>
+                      <FaHotel className="text-purple-400" />
+                      <span className="font-medium text-white">{values.hotel}</span>
                     </div>
                     <div className="text-right">
-                      <span className="font-bold text-green-400">{values.price ? `${values.price} ريال` : 'غير محدد'}</span>
-                      <p className="text-xs text-gray-400">{values.fromCity} → {values.toCity}</p>
+                      <span className="font-bold text-green-400">${values.price}</span>
+                      <p className="text-xs text-gray-400">{values.guests || 'غير محدد'}</p>
                     </div>
                   </div>
                 </div>
@@ -244,17 +228,17 @@ const AddCarBooking = () => {
               <div className="flex gap-3 mt-8">
                 <button
                   type="button"
-                  onClick={() => setOpenAddCar(false)}
+                  onClick={() => setOpenHotels(false)}
                   className="flex-1 px-4 py-2.5 bg-gray-800/50 border border-purple-500/20 rounded-xl text-gray-300 hover:bg-gray-800 hover:text-white transition-all duration-300"
                 >
                   إلغاء
                 </button>
                 <button
                   type="submit"
-                  disabled={loadd || isSubmitting}
+                  disabled={isSubmitting}
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {(loadd || isSubmitting) ? (
+                  {isSubmitting ? (
                     <>
                       <FaSpinner className="animate-spin" />
                       جاري الإضافة...
@@ -298,4 +282,4 @@ const AddCarBooking = () => {
   );
 };
 
-export default AddCarBooking;
+export default AddHotel;

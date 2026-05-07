@@ -36,13 +36,7 @@ const Header = () => {
         </div>
 
         {/* Action Button */}
-        <button className="relative px-6 py-3 overflow-hidden font-medium text-white transition-all duration-300 group bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl hover:shadow-lg hover:shadow-purple-500/25 hover:scale-105">
-          <span className="relative z-10 flex items-center gap-2">
-            <FiUserPlus className="w-5 h-5 group-hover:animate-bounce" />
-            وكيل جديد
-          </span>
-          <div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-gradient-to-r from-pink-600 to-purple-600 group-hover:opacity-100" />
-        </button>
+      
       </div>
     </div>
   )

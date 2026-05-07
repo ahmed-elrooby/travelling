@@ -2,7 +2,7 @@
 import React, { useContext } from 'react'
 import Link from 'next/link'
 import { FiChevronsLeft, FiPlusCircle } from 'react-icons/fi'
-import { FaPlane } from 'react-icons/fa'
+import { FaChevronLeft, FaPlane } from 'react-icons/fa'
 import { Admin } from '@/app/Providers/AdminContext/AdminProvider'
 import AddBooking from './AddBooking'
 
@@ -18,16 +18,19 @@ const Header = () => {
       <div className="flex flex-col items-start justify-between gap-4 p-6 border md:flex-row md:items-center bg-gradient-to-br from-slate-900/50 via-slate-800/30 to-transparent backdrop-blur-sm rounded-2xl border-white/5">
       <div className="space-y-2">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-gray-400">
-          <Link 
-            href="/Admin" 
-            className="transition-colors duration-200 hover:text-purple-400"
-          >
-            لوحة التحكم
-          </Link>
-          <FiChevronsLeft className="text-xs rotate-180" />
-          <span className="text-white/80">حجوزات الطيران</span>
-        </div>
+         <div className="flex flex-wrap items-center gap-2 mb-3 text-sm text-gray-400">
+            <Link href="/Admin" className="transition-all duration-300 hover:text-purple-400 hover:translate-x-0.5">
+              الرئيسية
+            </Link>
+            <FaChevronLeft className="text-xs text-gray-500" />
+            <Link href="/Admin/BookingPage" className="transition-all duration-300 hover:text-purple-400 hover:translate-x-0.5">
+              الحجوزات
+            </Link>
+            <FaChevronLeft className="text-xs text-gray-500" />
+            <span className="font-semibold text-transparent bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text">
+             الطيران
+            </span>
+          </div>
         
         {/* Title */}
         <div className="flex items-center gap-3">
