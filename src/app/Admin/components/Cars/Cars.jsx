@@ -1,7 +1,8 @@
 import React from 'react'
-import CarRentalHeader from '../Utils/Cars/Header'
-import CarRentalStats from '../Utils/Cars/Cards'
-import CarRentalSearchFilter from '../Utils/Cars/Table'
+import CarRentalHeader from '../utils/Cars/Header'
+import CarRentalStats from '../utils/Cars/Cards'
+import CarRentalSearchFilter from '../utils/Cars/Table'
+
 
 const Cars = () => {
   return <>

@@ -1,13 +1,14 @@
 import React from 'react'
-import HotelBookingsHeader from '../Utils/Hotel/Header'
-import HotelStats from '../Utils/Hotel/Cards'
-import HotelSearchFilter from '../Utils/Hotel/Table'
+import HotelBookingsHeader from '../utils/Hotel/Header'
+import HotelStats from '../utils/Hotel/Cards'
+import Table from '../utils/Hotel/Table'
+
 
 const Hotel = () => {
   return <>
   <HotelBookingsHeader/>
   <HotelStats/>
-  <HotelSearchFilter/>
+  <Table/>
   </>
 }
 
