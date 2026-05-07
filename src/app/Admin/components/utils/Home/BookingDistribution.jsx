@@ -51,15 +51,15 @@ export default function BookingDistribution() {
     >
       {/* Title */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg sm:text-xl font-bold text-white">
+        <h2 className="text-lg font-bold text-white sm:text-xl">
           📊 توزيع الحجوزات
         </h2>
       </div>
 
       {/* Chart */}
       <div className="w-full h-[260px] sm:h-[300px]">
-        <ResponsiveContainer>
-          <PieChart>
+<ResponsiveContainer width="100%" height="100%">
+            <PieChart>
             <Pie
               data={chartData}
               cx="50%"
@@ -87,11 +87,11 @@ export default function BookingDistribution() {
       </div>
 
       {/* Legend */}
-      <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mt-4 text-xs sm:text-sm text-gray-300">
+      <div className="flex flex-wrap justify-center gap-4 mt-4 text-xs text-gray-300 sm:gap-6 sm:text-sm">
         {chartData.map((item, i) => (
           <div key={i} className="flex items-center gap-2">
             <span
-              className="w-4 sm:w-5 h-2 rounded-full"
+              className="w-4 h-2 rounded-full sm:w-5"
               style={{ background: item.color }}
             />
             {item.name}
@@ -100,21 +100,21 @@ export default function BookingDistribution() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-6 text-center text-white">
+      <div className="grid grid-cols-3 gap-2 mt-6 text-center text-white sm:gap-4">
         {chartData.map((item, i) => (
           <div key={i} className="space-y-2">
             <p className="text-[10px] sm:text-sm text-gray-400">
               {item.name}
             </p>
 
-            <p className="text-sm sm:text-lg font-bold">
+            <p className="text-sm font-bold sm:text-lg">
               {item.value.toLocaleString()}
             </p>
 
             {/* Progress */}
             <div className="h-1.5 bg-[#1a1a2e] rounded-full overflow-hidden">
               <div
-                className="h-full rounded-full transition-all duration-500"
+                className="h-full transition-all duration-500 rounded-full"
                 style={{
                   width: `${(item.value / total) * 100}%`,
                   background: item.color,

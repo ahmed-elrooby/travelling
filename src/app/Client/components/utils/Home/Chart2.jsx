@@ -46,7 +46,7 @@ const Chart2 = () => {
         </h2>
 
         <div style={{ width: "100%", height: 300 }}>
-          <ResponsiveContainer>
+  <ResponsiveContainer width="100%" height="100%">
             <LineChart data={growthData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
               <XAxis dataKey="month" stroke="#9CA3AF" />

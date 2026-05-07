@@ -38,7 +38,7 @@ const Chart = () => {
 
       {/* Chart */}
       <div style={{ width: "100%", height: 320 }}>
-        <ResponsiveContainer>
+  <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={chartData}>
 
             <defs>

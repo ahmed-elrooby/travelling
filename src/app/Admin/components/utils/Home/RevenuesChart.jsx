@@ -44,7 +44,7 @@ export default function RevenueChart() {
     <div
       className="
         w-full 
-        h-[420px] sm:h-[500px] lg:h-[600px]
+        h-[600px]
         bg-gradient-to-br from-[#0f0c29] to-[#1a1a2e]
         p-4 sm:p-6 
         rounded-2xl 
@@ -63,8 +63,9 @@ export default function RevenueChart() {
         </p>
       </div>
 
-      <ResponsiveContainer width="100%" height="85%">
-        <LineChart data={chartData}>
+<div className="w-full h-[450px]">
+  <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={chartData}>
           <CartesianGrid stroke="#2a2a40" strokeDasharray="3 3" />
 
           <XAxis
@@ -99,5 +100,7 @@ export default function RevenueChart() {
         </LineChart>
       </ResponsiveContainer>
     </div>
+
+    </div>  
   );
 }

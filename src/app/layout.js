@@ -43,32 +43,9 @@ export const metadata = {
 
   creator: "Ahmed Eid",
 
-  openGraph: {
-    title: "Exclusive Travel",
-    description:
-      "احجز الفنادق والطيران والسيارات بسهولة مع أفضل العروض.",
-    url: "https://yourdomain.com",
-    siteName: "Exclusive Travel",
-    locale: "ar_EG",
-    type: "website",
+ 
 
-    images: [
-      {
-        url: "/seo.png",
-        width: 1200,
-        height: 630,
-        alt: "Exclusive Travel",
-      },
-    ],
-  },
-
-  twitter: {
-    card: "summary_large_image",
-    title: "Exclusive Travel",
-    description:
-      "أفضل منصة لحجز الفنادق والطيران والسيارات.",
-    images: ["/seo.png"],
-  },
+  
 
   robots: {
     index: true,

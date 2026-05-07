@@ -10,7 +10,6 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
-  Cell,
 } from "recharts";
 
 const COLORS = ["#8b5cf6", "#ec4899", "#3b82f6", "#10b981"];
@@ -20,7 +19,6 @@ export default function StatsChart() {
 
   const rawData = B2B?.data?.topAgencies;
 
-  // ✅ تحويل + ترتيب + fallback
   const data =
     rawData
       ?.map((item, index) => ({
@@ -28,11 +26,10 @@ export default function StatsChart() {
         value: item.sales || item.revenue || 0,
         color: COLORS[index % COLORS.length],
       }))
-      ?.sort((a, b) => b.value - a.value) // 🔥 ترتيب تنازلي
-      ?.slice(0, 5) || []; // 🔥 top 5 فقط
+      ?.sort((a, b) => b.value - a.value)
+      ?.slice(0, 5) || [];
 
-  // ✅ loading
-  if (!rawData) {
+  if (!rawData || rawData.length === 0) {
     return (
       <div className="bg-[#0f0c29] p-6 rounded-2xl border border-purple-500/30">
         <div className="w-full h-[300px] bg-slate-800 animate-pulse rounded-xl" />
@@ -40,22 +37,12 @@ export default function StatsChart() {
     );
   }
 
-  // ✅ empty state
-  if (data.length === 0) {
-    return (
-      <div className="bg-[#0f0c29] p-6 rounded-2xl border border-purple-500/30 text-center text-gray-400">
-        لا توجد بيانات لعرضها
-      </div>
-    );
-  }
-
   return (
     <div className="relative bg-gradient-to-br from-[#0f0c29] to-[#1a1a40] p-6 rounded-2xl border border-white/10 shadow-xl overflow-hidden">
 
-      {/* Glow effect */}
       <div className="absolute w-40 h-40 bg-purple-500/10 blur-3xl -top-10 -left-10" />
 
-      <h2 className="mb-6 text-xl font-bold text-white flex items-center gap-2">
+      <h2 className="flex items-center gap-2 mb-6 text-xl font-bold text-white">
         📊 أعلى الوكالات مبيعًا
       </h2>
 
@@ -72,12 +59,16 @@ export default function StatsChart() {
 
             <YAxis
               tick={{ fill: "#aaa" }}
-              tickFormatter={(val) => `${val}$`}
+              tickFormatter={(val) =>
+                `${Number(val || 0).toLocaleString()}$`
+              }
             />
 
             <Tooltip
               cursor={{ fill: "rgba(255,255,255,0.05)" }}
-              formatter={(value) => `${value}$`}
+              formatter={(value) =>
+                `${Number(value || 0).toLocaleString()}$`
+              }
               contentStyle={{
                 background: "#111827",
                 border: "none",
@@ -89,10 +80,13 @@ export default function StatsChart() {
             <Bar
               dataKey="value"
               radius={[10, 10, 0, 0]}
-              animationDuration={800} // 🔥 smooth animation
+              animationDuration={800}
             >
               {data.map((entry, index) => (
-                <Cell key={index} fill={entry.color} />
+                <Cell
+                  key={index}
+                  fill={entry.color}
+                />
               ))}
             </Bar>
 
@@ -100,11 +94,10 @@ export default function StatsChart() {
         </ResponsiveContainer>
       </div>
 
-      {/* 🔥 Top Label */}
       <div className="mt-4 text-sm text-gray-400">
         أعلى وكالة:
-        <span className="text-white font-bold ml-2">
-          {data[0]?.name} ({data[0]?.value}$)
+        <span className="ml-2 font-bold text-white">
+          {data?.[0]?.name || "لا يوجد بيانات"} ({data?.[0]?.value || 0}$)
         </span>
       </div>
 

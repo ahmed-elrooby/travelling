@@ -81,7 +81,6 @@ const getHotel = async () => {
         Authorization:`Bearer ${Cookies.get("accessToken")}`
       }
     })
-    console.log(data)
     return data
   } catch (error) {
     throw error
@@ -202,12 +201,10 @@ const handleAddHotelMutation =useMutation({
     HotelQuery.invalidateQueries(["Hotel","BookingsHotels"])
   },
   onError:(err)=>{
-    console.log(err)
     toast.error(err?.response?.data?.message)
   }
 })
 const handleAddHotelFinal = (values)=>{
-  console.log(values)
   handleAddHotelMutation.mutate(values)
 }
 
@@ -285,7 +282,6 @@ const AddUserMutation = useMutation({
 })
 
 const AddUserFinal = (values)=>{
-  console.log(values)
   AddUserMutation.mutate(values)
   
 }
@@ -364,7 +360,6 @@ const handleAddFlightBooking = async (values)=>{
         Authorization:`Bearer ${Cookies.get("accessToken")}`
       }
     })
-    console.log(data)
     return data
     
   } catch (error) {
@@ -386,12 +381,10 @@ const handleAddFlightMutation = useMutation({
     setOpenAddFlight(false)
   },
   onError:(error)=>{
-    console.log(error?.response)
     toast.error(error.response.data.message)
   }
 })
 const handleAddFlight=(values)=>{
-  console.log(values)
   handleAddFlightMutation.mutate(values)
 }
 const handleAddCarsSection = async (values)=>{
@@ -421,12 +414,10 @@ const handleAddCarsMutation = useMutation({
     setOpenAddCar(false)
   },onError:(err)=>{
     toast.error(err?.response?.data?.message)
-    console.log(err?.response)
   }
 
 })
 const handleAddCarFinal = (values)=>{
-  console.log(values)
   handleAddCarsMutation.mutate(values)
 }
 const getCarsSection = async()=>{
@@ -438,7 +429,6 @@ const getCarsSection = async()=>{
     })
     return data?.data
   } catch (error) {
-    console.log(error)
     throw error
   }
 }
