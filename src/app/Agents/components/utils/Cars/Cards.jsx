@@ -1,13 +1,47 @@
-import React from 'react'
-import { FaCarSide, FaCheckCircle, FaClock, FaPercent, FaArrowUp } from 'react-icons/fa'
+"use client"
+import { Agent } from '@/app/Providers/AgentContext/AgentProvider'
+import React, { useContext } from 'react'
+import {
+    FaCarSide,
+    FaCheckCircle,
+    FaClock,
+    FaPercent,
+    FaArrowUp
+} from 'react-icons/fa'
 
 const Cards = () => {
-    
+
+    const { carsSection } = useContext(Agent)
+
+    const carsData = carsSection || []
+
+    // ✅ Total Bookings
+    const totalBookings = carsData.length
+
+    // ✅ Active / Confirmed
+    const confirmedBookings = carsData.filter(
+        (item) => item.status === "confirmed"
+    ).length
+
+    // ✅ Pending
+    const pendingBookings = carsData.filter(
+        (item) => item.status === "pending"
+    ).length
+
+    // ✅ Total Revenue
+    const totalRevenue = carsData.reduce(
+        (acc, item) => acc + Number(item.price || 0),
+        0
+    )
+
+    // ✅ Commission 8%
+    const commission = (totalRevenue * 0.08).toFixed(0)
+
     const cardsData = [
         {
             id: 1,
             title: "إجمالي حجوزات السيارات",
-            value: "8",
+            value: totalBookings,
             icon: FaCarSide,
             iconColor: "text-blue-400",
             bgColor: "bg-blue-500/20",
@@ -16,8 +50,8 @@ const Cards = () => {
         },
         {
             id: 2,
-            title: "الحجوزات النشطة",
-            value: "5",
+            title: "الحجوزات المؤكدة",
+            value: confirmedBookings,
             icon: FaCheckCircle,
             iconColor: "text-green-400",
             bgColor: "bg-green-500/20",
@@ -27,7 +61,7 @@ const Cards = () => {
         {
             id: 3,
             title: "قيد الانتظار",
-            value: "2",
+            value: pendingBookings,
             icon: FaClock,
             iconColor: "text-yellow-400",
             bgColor: "bg-yellow-500/20",
@@ -37,7 +71,7 @@ const Cards = () => {
         {
             id: 4,
             title: "إجمالي العمولات (8%)",
-            value: "$355",
+            value: `${commission} ريال`,
             icon: FaPercent,
             iconColor: "text-purple-400",
             bgColor: "bg-purple-500/20",
@@ -49,34 +83,58 @@ const Cards = () => {
     return (
         <div className="grid grid-cols-1 gap-5 my-8 sm:grid-cols-2 lg:grid-cols-4">
             {cardsData.map((card, index) => {
+
                 const Icon = card.icon
+
                 return (
                     <div
                         key={card.id}
-                        className={`group relative overflow-hidden bg-gradient-to-br ${card.gradient} backdrop-blur-md border border-white/10 rounded-2xl transition-all duration-500 hover:scale-105 hover:shadow-2xl cursor-pointer`}
+                        className={`group relative overflow-hidden bg-gradient-to-br ${card.gradient} backdrop-blur-md border border-white/10 rounded-2xl transition-all duration-500 hover:scale-[1.03] hover:shadow-2xl cursor-pointer`}
                         data-aos="fade-up"
                         data-aos-delay={index * 100}
                     >
-                        <div className="relative p-4">
+
+                        {/* Glow */}
+                        <div className="absolute inset-0 transition-opacity duration-500 opacity-0 bg-white/5 group-hover:opacity-100" />
+
+                        <div className="relative p-5">
+
                             <div className="flex items-center justify-between">
+
+                                {/* Content */}
                                 <div>
-                                    <p className="text-sm font-medium text-gray-400">
+
+                                    <p className="text-sm font-medium tracking-wide text-gray-400">
                                         {card.title}
                                     </p>
-                                    <p className="mt-2 text-2xl font-bold text-white">
+
+                                    <h3 className="mt-3 text-3xl font-bold text-white">
                                         {card.value}
-                                    </p>
-                                    <div className="flex items-center gap-1 mt-2">
+                                    </h3>
+
+                                    <div className="flex items-center gap-1 mt-3">
                                         <FaArrowUp className="text-xs text-green-400" />
-                                        <span className="text-xs text-green-400">{card.trend}</span>
-                                        <span className="text-xs text-gray-500">عن الشهر الماضي</span>
+                                        <span className="text-xs font-medium text-green-400">
+                                            {card.trend}
+                                        </span>
+                                        <span className="text-xs text-gray-500">
+                                            عن الشهر الماضي
+                                        </span>
                                     </div>
+
                                 </div>
-                                <div className={`p-2.5 rounded-xl ${card.bgColor} transition-all duration-300 group-hover:scale-110 group-hover:rotate-6`}>
-                                    <Icon className={`text-2xl ${card.iconColor}`} />
+
+                                {/* Icon */}
+                                <div
+                                    className={`p-3 rounded-2xl ${card.bgColor} transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 shadow-lg`}
+                                >
+                                    <Icon className={`text-3xl ${card.iconColor}`} />
                                 </div>
+
                             </div>
+
                         </div>
+
                     </div>
                 )
             })}

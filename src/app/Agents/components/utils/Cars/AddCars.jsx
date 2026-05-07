@@ -9,9 +9,9 @@ import { Agent } from "@/app/Providers/AgentContext/AgentProvider";
 
 
 const AddCarBooking = () => {
-  const { setOpenCars, openCars, AddCarsFinal,loadd } = useContext(Agent);
+  const { openAddCar,setOpenAddCar, handleAddCarFinal,loadd } = useContext(Agent);
 
-  const counterRef = useRef(40107);
+  const counterRef = useRef(40177);
 
   const generateId = () => {
     counterRef.current += 1;
@@ -51,12 +51,12 @@ const AddCarBooking = () => {
       customer: "أحمد محمد",
     };
 
-    AddCarsFinal(newBooking);
+    handleAddCarFinal(newBooking);
     resetForm();
     setSubmitting(false);
   };
 
-  if (!openCars) return null;
+  if (!openAddCar) return null;
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-2 bg-black/70 backdrop-blur-sm animate-fadeIn">
@@ -76,7 +76,7 @@ const AddCarBooking = () => {
               </div>
             </div>
             <button
-              onClick={() => setOpenCars(false)}
+              onClick={() => setOpenAddCar(false)}
               className="p-2 transition-all duration-300 rounded-xl hover:bg-gray-800/50 group"
             >
               <FaTimes className="text-gray-400 transition-colors group-hover:text-purple-400" />
@@ -243,7 +243,7 @@ const AddCarBooking = () => {
               <div className="flex gap-3 mt-2">
                 <button
                   type="button"
-                  onClick={() => setOpenCars(false)}
+                  onClick={() => setOpenAddCar(false)}
                   className="flex-1 px-4 py-2.5 bg-gray-800/50 border border-purple-500/20 rounded-xl text-gray-300 hover:bg-gray-800 hover:text-white transition-all duration-300"
                 >
                   إلغاء
