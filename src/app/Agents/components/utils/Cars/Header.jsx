@@ -1,9 +1,17 @@
-import React from 'react'
+"use client"
+import { Agent } from '@/app/Providers/AgentContext/AgentProvider';
+import React, { useContext } from 'react'
 import { FiHome, FiChevronLeft, FiPlusCircle } from 'react-icons/fi'
+import AddCarBooking from './AddCars';
 
 const Header = () => {
-  return (
-    <div className="flex flex-wrap items-center justify-between gap-3">
+  const {openCars,setOpenCars} =useContext(Agent);
+  console.log(openCars)
+  return <>
+ {
+  openCars && <AddCarBooking/>
+ }
+  <div className="flex flex-wrap items-center justify-between gap-3">
       <div>
         <div className="flex items-center gap-2 mb-2 text-sm text-gray-400">
           <FiHome className="text-purple-400" />
@@ -16,13 +24,15 @@ const Header = () => {
         </h2>
         <p className="mt-1 text-sm text-gray-400">إدارة حجوزات تأجير السيارات، العروض والعمولات.</p>
       </div>
-           <button className="relative overflow-hidden transition-all duration-300 bg-gradient-to-br from-[#8b5cf6] to-[#ec4899] text-white px-5 py-2.5 rounded-xl flex items-center gap-2">
-
-      
+           <button onClick={()=>setOpenCars(true)}
+            className="relative overflow-hidden transition-all duration-300 bg-gradient-to-br from-[#8b5cf6] to-[#ec4899] text-white px-5 py-2.5 rounded-xl flex items-center gap-2">
         <FiPlusCircle /> <span>حجز سيارة جديد</span>
       </button>
     </div>
-  )
+  </>
+    
 }
 
 export default Header
+
+

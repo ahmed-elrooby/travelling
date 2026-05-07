@@ -271,6 +271,7 @@ const postUser = async (values) =>{
 const [openUser,setOpenUser]=useState(false)
 const userQuery = useQueryClient()
 const AddUserMutation = useMutation({
+  
   mutationKey:["adduser"],
   mutationFn:postUser,
   onSuccess:(data)=>{
@@ -418,7 +419,9 @@ const {data:carsSection}=useQuery({
 
 
   return (
-    <Admin.Provider value={{overview, flights,flightSection, Hotel, Cars, Users, B2B, B2C,handleAddFlight,loadd,setOpenAddFlight, openAddFlight,setOpenAddCar,openAddCar,handleAddCarFinal,carsSection,handleAddHotelFinal,openHotels,setOpenHotels,BookingsHotels, User, deleteUserFun, AddUserFinal,setOpenUser,openUser}} >
+    <Admin.Provider value={{overview, flights,flightSection, Hotel, Cars, Users, B2B, B2C,handleAddFlight,
+    loadd,setOpenAddFlight, openAddFlight,setOpenAddCar,openAddCar,handleAddCarFinal,carsSection,handleAddHotelFinal,
+    openHotels,setOpenHotels,BookingsHotels, User, deleteUserFun, AddUserFinal,setOpenUser,openUser}} >
       {children}
     </Admin.Provider>
   )

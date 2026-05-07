@@ -1,11 +1,13 @@
 "use client";
 import axios from 'axios';
-import React, { createContext } from 'react'
+import React, { createContext, useState } from 'react'
 import Cookies from "js-cookie";
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 export const Agent = createContext()
 const AgentProvider = ({children}) => {
   const baseurl = process.env.NEXT_PUBLIC_API
+  const [loadd,setLoadd]=useState(false)
   const handleGetOverview =async () => {
     try {
       const {data}= await axios.get(`${baseurl}/dashboard/b2b/overview`,{
@@ -58,7 +60,69 @@ const {data:booking}=useQuery({
   queryKey:["booking"],
   queryFn:handleGetBooking
 })
-  return <Agent.Provider value={{overview,me,booking}}>
+
+
+
+
+
+// post cars
+const postCars = async (values) => {
+  try {
+    const {data} = await axios.post(`${baseurl}/bookings/cars`,values,{
+      headers:{
+        Authorization:`Bearer ${Cookies.get("accessToken")}`,
+        "Content-Type":"application/json"
+      }
+    })
+    return data
+  } catch (error) {
+    throw error
+  }
+
+
+}
+const [openCars,setOpenCars]=useState(false)
+const CarsQuery = useQueryClient()
+const AddCarsMutation =useMutation({
+  mutationKey:["addCars"],
+  mutationFn:postCars,
+  onSuccess:(data)=>{
+    toast.success(data?.message)
+    setOpenCars(false)
+    CarsQuery.invalidateQueries(["Cars","BookingsCars"])
+  },
+  onError:(err)=>{
+    console.log(err)
+    toast.error(err?.response?.data?.message)
+  }
+})
+const AddCarsFinal = (values)=>{
+  console.log(values)
+  AddCarsMutation.mutate(values)
+}
+
+
+
+
+// get car
+const getCars = async () => {
+  try {
+    const {data} = await axios.get(`${baseurl}/bookings/cars`,{
+      headers:{
+        Authorization:`Bearer ${Cookies.get("accessToken")}`
+      }
+    })
+    return data
+  } catch (error) {
+    throw error
+  }
+}
+
+const {data:Cars} = useQuery({
+  queryKey:["Cars"],
+  queryFn:getCars
+})
+  return <Agent.Provider value={{overview,me,booking, AddCarsFinal,loadd, openCars, setOpenCars, Cars}}>
       {children}
     </Agent.Provider>
   
