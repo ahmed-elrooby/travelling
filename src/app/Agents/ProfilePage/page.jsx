@@ -1,10 +1,18 @@
-import React from 'react'
-import Profile from '../components/Profile/Profile'
+import React from "react";
+import Profile from "../components/Profile/Profile";
 
-const page = () => {
-  return <>
-  <Profile/>
-  </>
-}
+export const metadata = {
+  title: "الملف الشخصي | إعدادات الحساب",
+  description:
+    "إدارة بيانات الحساب الشخصي وتحديث المعلومات وإعدادات الأمان داخل النظام.",
+  robots: {
+    index: false,   // ❌ مهم جدًا
+    follow: false,
+  },
+};
 
-export default page
+const Page = () => {
+  return <Profile />;
+};
+
+export default Page;

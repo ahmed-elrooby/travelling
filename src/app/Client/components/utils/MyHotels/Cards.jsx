@@ -5,8 +5,8 @@ import React, { useContext, useMemo } from "react";
 import {
   FaHotel,
   FaCalendarWeek,
-  FaDollarSign,
   FaShieldAlt,
+  FaCheckCircle,
 } from "react-icons/fa";
 
 const Cards = () => {
@@ -18,8 +18,8 @@ const Cards = () => {
       return {
         totalBookings: 0,
         upcomingNights: 0,
-        totalSpent: 0,
         freeCancellation: 0,
+        confirmedBookings: 0,
       };
     }
 
@@ -28,7 +28,7 @@ const Cards = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // ✅ حساب الليالي القادمة
+    // ✅ الليالي القادمة
     const upcomingNights = BookingsHotels.reduce((sum, booking) => {
       const checkOut = new Date(booking.checkOut);
 
@@ -45,11 +45,6 @@ const Cards = () => {
       return sum;
     }, 0);
 
-    // ✅ إجمالي الإنفاق
-    const totalSpent = BookingsHotels.reduce((sum, booking) => {
-      return sum + (booking.price || 0);
-    }, 0);
-
     // ✅ الإلغاء المجاني
     const freeCancellation = BookingsHotels.filter(
       (booking) =>
@@ -57,22 +52,21 @@ const Cards = () => {
         booking.status === "pending"
     ).length;
 
+    // ✅ الحجوزات المؤكدة
+    const confirmedBookings = BookingsHotels.filter(
+      (booking) => booking.status === "confirmed"
+    ).length;
+
     return {
       totalBookings,
       upcomingNights,
-      totalSpent,
       freeCancellation,
+      confirmedBookings,
     };
   }, [BookingsHotels]);
 
-  // ✅ تنسيق السعر برقمين بعد العلامة
-  const formatPrice = (price) => {
-    return Number(price).toFixed(2) + "$";
-  };
-
   return (
     <>
-      {/* Cards */}
       <div className="grid grid-cols-1 gap-4 mb-8 sm:grid-cols-2 lg:grid-cols-4 md:gap-6">
         
         {/* إجمالي الحجوزات */}
@@ -113,21 +107,21 @@ const Cards = () => {
           </div>
         </div>
 
-        {/* إجمالي الإنفاق */}
+        {/* الحجوزات المؤكدة */}
         <div className="p-4 transition-all duration-300 border bg-white/5 backdrop-blur-md border-white/10 rounded-2xl hover:scale-105 hover:border-yellow-500/30">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-gray-400 md:text-sm">
-                إجمالي الإنفاق
+                الحجوزات المؤكدة
               </p>
 
-              <p className="mt-1 text-2xl font-bold text-white md:text-3xl">
-                {formatPrice(stats.totalSpent)}
+              <p className="mt-1 text-2xl font-bold text-yellow-400 md:text-3xl">
+                {stats.confirmedBookings}
               </p>
             </div>
 
             <div className="p-3 rounded-xl bg-yellow-500/20">
-              <FaDollarSign className="text-xl text-yellow-400" />
+              <FaCheckCircle className="text-xl text-yellow-400" />
             </div>
           </div>
         </div>
@@ -151,8 +145,6 @@ const Cards = () => {
           </div>
         </div>
       </div>
-
-    
     </>
   );
 };

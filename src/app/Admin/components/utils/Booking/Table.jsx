@@ -173,7 +173,7 @@ export default function BookingsView() {
   };
 
   return (
-    <div className="w-full p-4 rounded-2xl sm:p-6 bg-gradient-to-br from-[#0f0c29] to-[#1a1638] border border-white/10">
+    <div className="">
       {/* Header */}
       <div className="flex flex-col gap-4 mb-6 sm:flex-row sm:items-center sm:justify-between">
         <div>

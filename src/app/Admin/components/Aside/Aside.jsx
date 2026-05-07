@@ -17,13 +17,17 @@ import { FaChartLine } from "react-icons/fa6";
 import { GiCommercialAirplane } from "react-icons/gi";
 import { FiMenu, FiX } from "react-icons/fi";
 import { Auth } from "@/app/Providers/AuthContext/AuthProvider";
+import { Admin } from "@/app/Providers/AdminContext/AdminProvider";
 
 const Aside = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
     const {profile,handleLogoutFun}=useContext(Auth)
+    const {carsSection,BookingsHotels,flightSection,User}=useContext(Admin)
 
-
+const allUsers=User?.data?.filter(user=>user.role!=='admin')
+const b2b = User?.data?.filter(user=>user.role==='b2b')
+const b2c = User?.data?.filter(user=>user.role==='b2c')
   const navItems = [
     {
       section: "الرئيسية",
@@ -43,21 +47,21 @@ const Aside = () => {
           name: "حجوزات الطيران",
           href: "/Admin/BookingPage",
           icon: FaPlane,
-          badge: "1.2k",
+          badge: flightSection?.data?.length || 0,
           badgeColor: "purple",
         },
         {
           name: "حجوزات الفنادق",
           href: "/Admin/HotelPage",
           icon: FaHotel,
-          badge: "892",
+          badge: BookingsHotels?.data?.length || 0,
           badgeColor: "pink",
         },
         {
           name: "السيارات والتأجير",
           href: "/Admin/CarsPage",
           icon: FaCar,
-          badge: "156",
+          badge: carsSection?.length || 0,
           badgeColor: "blue",
         },
       ],
@@ -69,16 +73,22 @@ const Aside = () => {
           name: "جميع المستخدمين",
           href: "/Admin/UsersPage",
           icon: FaUsers,
+          badge: allUsers?.length || 0,
+          badgeColor: "blue",
         },
         {
           name: "الوكلاء B2B",
           href: "/Admin/AgentsPage",
           icon: FaBuilding,
+          badge: b2b?.length || 0,
+          badgeColor: "purple",
         },
         {
           name: "العملاء B2C",
           href: "/Admin/ClientPage",
           icon: FaUserCheck,
+          badge: b2c?.length || 0,
+          badgeColor: "pink",
         },
       ],
     },

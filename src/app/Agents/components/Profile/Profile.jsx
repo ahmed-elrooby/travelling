@@ -38,7 +38,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen px-4 py-8 md:px-8 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+    <div className="min-h-screen ">
       <div className="max-w-2xl mx-auto">
         
         {/* Header */}

@@ -3,6 +3,7 @@
 import React, { useContext } from "react";
 import { FaPlane, FaArrowLeft } from "react-icons/fa";
 import { Admin } from "@/app/Providers/AdminContext/AdminProvider";
+import Link from "next/link";
 
 const Booking = () => {
   const { overview } = useContext(Admin);
@@ -38,45 +39,41 @@ const Booking = () => {
       "
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-white/10">
-        <h3 className="flex items-center text-sm sm:text-lg font-bold text-white">
+      <div className="flex items-center justify-between px-4 py-4 border-b sm:px-6 border-white/10">
+        <h3 className="flex items-center text-sm font-bold text-white sm:text-lg">
           <FaPlane className="ml-2 text-purple-400" />
           أحدث حجوزات الطيران
         </h3>
 
-        <a
-          href="#"
-          className="flex items-center gap-1 text-xs sm:text-sm text-purple-400 hover:text-pink-400 transition"
+        <Link
+          href="/Admin/BookingPage"
+          className="flex items-center gap-1 text-xs text-purple-400 transition sm:text-sm hover:text-pink-400"
         >
           عرض الكل <FaArrowLeft className="text-xs" />
-        </a>
+        </Link>
       </div>
 
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full text-right min-w-[600px]">
-          <thead className="text-xs sm:text-sm text-gray-300 bg-white/5">
+          <thead className="text-xs text-gray-300 sm:text-sm bg-white/5">
             <tr>
-              <th className="px-4 sm:px-6 py-3">العميل</th>
-              <th className="px-4 sm:px-6 py-3">الرحلة</th>
-              <th className="px-4 sm:px-6 py-3">التاريخ</th>
-              <th className="px-4 sm:px-6 py-3">السعر</th>
-              <th className="px-4 sm:px-6 py-3">الحالة</th>
+              <th className="px-4 py-3 sm:px-6">العميل</th>
+              <th className="px-4 py-3 sm:px-6">الرحلة</th>
+              <th className="px-4 py-3 sm:px-6">التاريخ</th>
+              <th className="px-4 py-3 sm:px-6">السعر</th>
+              <th className="px-4 py-3 sm:px-6">الحالة</th>
             </tr>
           </thead>
 
-          <tbody className="text-xs sm:text-sm text-gray-300">
+          <tbody className="text-xs text-gray-300 sm:text-sm">
             {bookings.map((booking) => (
               <tr
                 key={booking.id}
-                className="
-                  border-b border-white/5 
-                  hover:bg-white/5 
-                  transition
-                "
+                className="transition border-b border-white/5 hover:bg-white/5"
               >
                 {/* Customer */}
-                <td className="px-4 sm:px-6 py-3">
+                <td className="px-4 py-3 sm:px-6">
                   <div className="flex items-center gap-3">
                     <img
                       src={`https://ui-avatars.com/api/?name=${booking.customer}&background=8b5cf6&color=fff`}
@@ -90,22 +87,22 @@ const Booking = () => {
                 </td>
 
                 {/* Route */}
-                <td className="px-4 sm:px-6 py-3 text-gray-300">
+                <td className="px-4 py-3 text-gray-300 sm:px-6">
                   {booking.route}
                 </td>
 
                 {/* Date */}
-                <td className="px-4 sm:px-6 py-3 text-gray-400">
+                <td className="px-4 py-3 text-gray-400 sm:px-6">
                   {booking.date}
                 </td>
 
                 {/* Price */}
-                <td className="px-4 sm:px-6 py-3 font-semibold text-white">
+                <td className="px-4 py-3 font-semibold text-white sm:px-6">
                   ${booking.price}
                 </td>
 
                 {/* Status */}
-                <td className="px-4 sm:px-6 py-3">
+                <td className="px-4 py-3 sm:px-6">
                   <span
                     className={`px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs border ${getStatusStyles(
                       booking.status

@@ -170,7 +170,7 @@ export default function CarRentalSearchFilter() {
   const hasActiveFilters = searchLocation || pickupDate || returnDate;
 
   return (
-    <div className="min-h-screen p-6 font-sans bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900" dir="rtl">
+    <div className="min-h-screen" >
       <div className="mx-auto space-y-6 max-w-7xl">
 
         {/* Header */}

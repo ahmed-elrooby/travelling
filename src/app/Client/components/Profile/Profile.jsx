@@ -5,7 +5,7 @@ import { FaEnvelope, FaIdCard, FaUserTag, FaCheckCircle, FaCalendarAlt, FaUserCi
 
 const ProfileB2C = () => {
   const { profile } = useContext(Auth)
-
+console.log(profile)
   if (!profile) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
@@ -38,7 +38,7 @@ const ProfileB2C = () => {
   }
 
   return (
-    <div className="min-h-screen px-4 py-8 md:px-8 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+    <div className="min-h-screen ">
       <div className="max-w-2xl mx-auto">
         
         {/* Header */}

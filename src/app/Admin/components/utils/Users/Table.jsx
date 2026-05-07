@@ -99,7 +99,6 @@ export default function UsersFilter() {
 
   const chips = [
     { label: "جميع المستخدمين", value: "all" },
-    { label: "المديرين", value: "admin" },
     { label: "الوكلاء B2B", value: "b2b" },
     { label: "العملاء B2C", value: "b2c" },
     { label: "نشطون", value: "active" },
@@ -168,7 +167,6 @@ export default function UsersFilter() {
               "
             >
               <option value="all">جميع الأنواع</option>
-              <option value="admin">مدير</option>
               <option value="b2b">وكيل B2B</option>
               <option value="b2c">عميل B2C</option>
             </select>

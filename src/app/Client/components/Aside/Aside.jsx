@@ -20,11 +20,13 @@ import {
   FaUserPlus
 } from "react-icons/fa";
 import { GiCommercialAirplane } from "react-icons/gi";
-import { FiMenu, FiX } from "react-icons/fi";
+import { FiLogOut, FiMenu, FiX } from "react-icons/fi";
 import { Auth } from "@/app/Providers/AuthContext/AuthProvider";
+import { Clients } from "@/app/Providers/ClientContext/ClientsProviders";
 
 const Aside = () => {
   const {profile,handleLogoutFun}=useContext(Auth)
+  const {flightSection,BookingsHotels,carsSection} = useContext(Clients);
   const pathname = usePathname();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -58,24 +60,28 @@ const Aside = () => {
           href: "/Client",
           icon: FaTachometerAlt,
           badge: null,
+          badgeColor: null,
         },
         {
           name: "حجوزاتي",
           href: "/Client/MyBookingPage",
           icon: FaPlane,
-          badge: null,
+          badge: flightSection?.length || 0,
+          badgeColor: "purple",
         },
         {
           name: "فنادقي",
           href: "/Client/HotelsPage",
           icon: FaHotel,
-          badge: null,
+          badge: BookingsHotels?.length || 0,
+          badgeColor: "pink",
         },
         {
           name: "سياراتي المستأجرة",
           href: "/Client/CarsPage",
           icon: FaCar,
-          badge: null,
+          badge: carsSection?.length || 0,
+          badgeColor: "blue",
         }
       ],
     },
@@ -84,7 +90,7 @@ const Aside = () => {
       items: [
         {
           name: "ملفي الشخصي",
-          href: "/dashboard/profile",
+          href: "/Client/ProfilePage",
           icon: FaUserCircle,
           badge: null,
         },
@@ -182,8 +188,8 @@ const Aside = () => {
                   const Icon = item.icon;
                   const isActive = pathname === item.href;
 
-                  return (
-                    <Link
+                  return <>
+                     <Link
                       key={itemIdx}
                       href={item.href}
                       className={`
@@ -214,11 +220,21 @@ const Aside = () => {
                         </span>
                       )}
                     </Link>
-                  );
+                  </>
+                 
+               
                 })}
               </div>
             </div>
           ))}
+                <button onClick={handleLogoutFun} className="w-full">
+                      <div className="flex items-center gap-3  px-3 md:px-4 py-2.5 md:py-3 rounded-xl transition-all duration-200 group text-gray-300 hover:text-red-400 hover:bg-red-500/5">
+                        <FiLogOut className="w-4 h-4 md:w-5 md:h-5" />
+                        <span className="text-sm font-medium md:text-base">
+                          تسجيل الخروج
+                        </span>
+                      </div>
+                    </button>
         </nav>
 
         {/* User Profile */}

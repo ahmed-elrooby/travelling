@@ -99,8 +99,8 @@ const Table = () => {
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-6 lg:p-8 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-      <div className="mx-auto max-w-7xl">
+    <div className="min-h-screen ">
+      <div className="mx-auto ">
         
         {/* Header */}
         <div className="mb-8">
@@ -144,15 +144,7 @@ const Table = () => {
               ))}
             </div>
 
-            {/* Export Buttons */}
-            <div className="flex gap-2">
-              <button className="p-2.5 bg-gray-800/50 border border-purple-500/20 rounded-xl hover:bg-purple-500/10 transition-all duration-300">
-                <FaPrint className="text-gray-400 hover:text-purple-400" />
-              </button>
-              <button className="p-2.5 bg-gray-800/50 border border-purple-500/20 rounded-xl hover:bg-purple-500/10 transition-all duration-300">
-                <FaDownload className="text-gray-400 hover:text-purple-400" />
-              </button>
-            </div>
+         
           </div>
         </div>
 
@@ -192,7 +184,6 @@ const Table = () => {
                 <th className="px-6 py-4 text-xs font-semibold tracking-wider text-right text-gray-300 uppercase">المدة</th>
                 <th className="px-6 py-4 text-xs font-semibold tracking-wider text-right text-gray-300 uppercase">السعر</th>
                 <th className="px-6 py-4 text-xs font-semibold tracking-wider text-right text-gray-300 uppercase">الحالة</th>
-                <th className="px-6 py-4 text-xs font-semibold tracking-wider text-right text-gray-300 uppercase">الإجراءات</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-purple-500/10">
@@ -243,11 +234,7 @@ const Table = () => {
                     <StatusBadge status={booking.status} />
                     <p className="mt-2 text-xs text-gray-400">آخر تحديث: {booking.updatedAt}</p>
                   </td>
-                  <td className="px-6 py-4">
-                    <button className="p-2 transition-all duration-300 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 group-hover:scale-110">
-                      <FaEye className="text-purple-400" />
-                    </button>
-                  </td>
+                 
                 </tr>
               ))}
             </tbody>

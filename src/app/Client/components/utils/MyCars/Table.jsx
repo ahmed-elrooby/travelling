@@ -144,23 +144,23 @@ const CarRentalsTable = () => {
   };
 
   return (
-    <div className="bg-[#0f0c29] p-6 rounded-xl">
-      <div className="max-w-7xl mx-auto">
+    <div className="bg-[#0f0c29] p-2   md:p-6 rounded-xl">
+      <div className="">
         {/* Header */}
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-2">
-            <div className="p-2 bg-blue-500/10 rounded-lg">
-              <FaCarSide className="text-blue-400 text-lg" />
+            <div className="p-2 rounded-lg bg-blue-500/10">
+              <FaCarSide className="text-lg text-blue-400" />
             </div>
             <h2 className="text-xl font-bold text-white">حجوزات السيارات</h2>
           </div>
-          <p className="text-gray-400 text-sm mr-10">إدارة ومتابعة جميع حجوزات السيارات</p>
+          <p className="mr-10 text-sm text-gray-400">إدارة ومتابعة جميع حجوزات السيارات</p>
         </div>
 
         {/* Search and View Toggle */}
         <div className="flex flex-col gap-3 mb-5 sm:flex-row sm:justify-between">
           <div className="relative flex-1">
-            <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
+            <FaSearch className="absolute text-sm text-gray-400 transform -translate-y-1/2 right-3 top-1/2" />
             <input
               className="w-full px-10 py-2.5 text-sm text-white bg-white/5 border border-white/10 rounded-lg focus:border-blue-500/50 focus:outline-none transition-all placeholder:text-gray-500"
               placeholder="بحث بالعميل، السيارة، أو رقم الحجز..."
@@ -169,7 +169,7 @@ const CarRentalsTable = () => {
             />
           </div>
 
-          <div className="flex gap-2 bg-white/5 rounded-lg p-1 w-fit">
+          <div className="flex gap-2 p-1 rounded-lg bg-white/5 w-fit">
             <button
               onClick={() => setViewMode("table")}
               className={`px-4 py-1.5 rounded-md transition-all flex items-center gap-2 text-sm ${
@@ -224,47 +224,47 @@ const CarRentalsTable = () => {
 
         {/* Empty State */}
         {rentals.length === 0 && (
-          <div className="text-center py-12 bg-white/5 rounded-xl">
-            <FaCarSide className="text-5xl text-gray-600 mx-auto mb-3" />
+          <div className="py-12 text-center bg-white/5 rounded-xl">
+            <FaCarSide className="mx-auto mb-3 text-5xl text-gray-600" />
             <p className="text-gray-400">لا توجد حجوزات حالياً</p>
           </div>
         )}
 
         {/* TABLE VIEW */}
         {viewMode === "table" && rentals.length > 0 && (
-          <div className="bg-white/5 rounded-xl overflow-hidden">
+          <div className="overflow-hidden bg-white/5 rounded-xl">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-white/5 border-b border-white/10">
+                <thead className="border-b bg-white/5 border-white/10">
                   <tr>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-400">
+                    <th className="px-4 py-3 text-xs font-medium text-right text-gray-400">
                       رقم الحجز
                     </th>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-400">
+                    <th className="px-4 py-3 text-xs font-medium text-right text-gray-400">
                       العميل
                     </th>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-400">
+                    <th className="px-4 py-3 text-xs font-medium text-right text-gray-400">
                       السيارة
                     </th>
                     <th
                       onClick={() => handleSort("pickupDate")}
-                      className="px-4 py-3 text-right text-xs font-medium text-gray-400 cursor-pointer hover:text-white transition-colors"
+                      className="px-4 py-3 text-xs font-medium text-right text-gray-400 transition-colors cursor-pointer hover:text-white"
                     >
-                      <div className="flex items-center gap-1 justify-end">
+                      <div className="flex items-center justify-end gap-1">
                         تاريخ الاستلام
                         <FaSort className="text-xs" />
                       </div>
                     </th>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-400">
+                    <th className="px-4 py-3 text-xs font-medium text-right text-gray-400">
                       الموقع
                     </th>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-400">
+                    <th className="px-4 py-3 text-xs font-medium text-right text-gray-400">
                       السعر
                     </th>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-400">
+                    <th className="px-4 py-3 text-xs font-medium text-right text-gray-400">
                       المدة
                     </th>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-400">
+                    <th className="px-4 py-3 text-xs font-medium text-right text-gray-400">
                       الحالة
                     </th>
                   </tr>
@@ -273,33 +273,33 @@ const CarRentalsTable = () => {
                   {currentItems.map((r) => (
                     <tr
                       key={r.id}
-                      className="border-b border-white/5 hover:bg-white/5 transition-colors"
+                      className="transition-colors border-b border-white/5 hover:bg-white/5"
                     >
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1.5">
-                          <FaHashtag className="text-gray-500 text-xs" />
-                          <span className="text-sm text-white font-mono">
+                          <FaHashtag className="text-xs text-gray-500" />
+                          <span className="font-mono text-sm text-white">
                             {r.bookingNumber}
                           </span>
                         </div>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center">
-                            <FaUser className="text-blue-400 text-xs" />
+                          <div className="flex items-center justify-center rounded-full w-7 h-7 bg-gradient-to-br from-blue-500/20 to-purple-500/20">
+                            <FaUser className="text-xs text-blue-400" />
                           </div>
                           <span className="text-sm text-white">{r.customerName}</span>
                         </div>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1.5">
-                          <FaCarSide className="text-blue-400 text-xs" />
+                          <FaCarSide className="text-xs text-blue-400" />
                           <span className="text-sm text-white">{r.carModel}</span>
                         </div>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1.5">
-                          <FaCalendarAlt className="text-gray-500 text-xs" />
+                          <FaCalendarAlt className="text-xs text-gray-500" />
                           <span className="text-sm text-gray-300">
                             {formatDate(r.pickupDate)}
                           </span>
@@ -307,15 +307,15 @@ const CarRentalsTable = () => {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1.5">
-                          <FaMapMarkerAlt className="text-gray-500 text-xs" />
+                          <FaMapMarkerAlt className="text-xs text-gray-500" />
                           <span className="text-sm text-gray-300">{r.fromCity}</span>
-                          <FaExchangeAlt className="text-gray-600 text-xs" />
+                          <FaExchangeAlt className="text-xs text-gray-600" />
                           <span className="text-sm text-gray-300">{r.toCity}</span>
                         </div>
                       </td>
                       <td className="px-4 py-3">
                         <div>
-                          <span className="text-sm text-white font-medium">
+                          <span className="text-sm font-medium text-white">
                             {r.price?.toLocaleString()} ريال
                           </span>
                           <div className="text-xs text-gray-500">
@@ -325,7 +325,7 @@ const CarRentalsTable = () => {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1">
-                          <FaClock className="text-gray-500 text-xs" />
+                          <FaClock className="text-xs text-gray-500" />
                           <span className="text-sm text-gray-300">{r.days} أيام</span>
                         </div>
                       </td>
@@ -342,21 +342,21 @@ const CarRentalsTable = () => {
 
         {/* CARDS VIEW */}
         {viewMode === "cards" && rentals.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {currentItems.map((r) => (
               <div
                 key={r.id}
-                className="bg-white/5 rounded-xl overflow-hidden border border-white/5 hover:border-white/10 transition-all"
+                className="overflow-hidden transition-all border bg-white/5 rounded-xl border-white/5 hover:border-white/10"
               >
                 <div className="p-4">
                   {/* Header */}
-                  <div className="flex items-center gap-2 mb-3 pb-2 border-b border-white/10">
-                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center">
-                      <FaUser className="text-blue-400 text-sm" />
+                  <div className="flex items-center gap-2 pb-2 mb-3 border-b border-white/10">
+                    <div className="flex items-center justify-center rounded-full w-9 h-9 bg-gradient-to-br from-blue-500/20 to-purple-500/20">
+                      <FaUser className="text-sm text-blue-400" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-white font-medium text-sm">{r.customerName}</p>
-                      <p className="text-gray-500 text-xs flex items-center gap-1">
+                      <p className="text-sm font-medium text-white">{r.customerName}</p>
+                      <p className="flex items-center gap-1 text-xs text-gray-500">
                         <FaHashtag className="text-xs" /> {r.bookingNumber}
                       </p>
                     </div>
@@ -364,10 +364,10 @@ const CarRentalsTable = () => {
                   </div>
 
                   {/* Car Info */}
-                  <div className="mb-3 pb-2 border-b border-white/5">
+                  <div className="pb-2 mb-3 border-b border-white/5">
                     <div className="flex items-center gap-1.5">
-                      <FaCarSide className="text-blue-400 text-sm" />
-                      <span className="text-white text-sm font-medium">{r.carModel}</span>
+                      <FaCarSide className="text-sm text-blue-400" />
+                      <span className="text-sm font-medium text-white">{r.carModel}</span>
                     </div>
                   </div>
 
@@ -378,14 +378,14 @@ const CarRentalsTable = () => {
                         <FaCalendarAlt className="text-xs" />
                         <span className="text-xs">الاستلام</span>
                       </div>
-                      <span className="text-gray-300 text-xs">{formatDate(r.pickupDate)}</span>
+                      <span className="text-xs text-gray-300">{formatDate(r.pickupDate)}</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1.5 text-gray-400">
                         <FaMapMarkerAlt className="text-xs" />
                         <span className="text-xs">الموقع</span>
                       </div>
-                      <span className="text-gray-300 text-xs">
+                      <span className="text-xs text-gray-300">
                         {r.fromCity} → {r.toCity}
                       </span>
                     </div>
@@ -395,10 +395,10 @@ const CarRentalsTable = () => {
                         <span className="text-xs">السعر</span>
                       </div>
                       <div className="text-right">
-                        <span className="text-white text-sm font-medium">
+                        <span className="text-sm font-medium text-white">
                           {r.price?.toLocaleString()} ريال
                         </span>
-                        <div className="text-gray-500 text-xs">
+                        <div className="text-xs text-gray-500">
                           {r.pricePerDay?.toLocaleString()} ريال/يوم
                         </div>
                       </div>
@@ -412,7 +412,7 @@ const CarRentalsTable = () => {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 mt-6">
+          <div className="flex items-center justify-center gap-2 mt-6">
             <button
               onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
               disabled={currentPage === 1}
@@ -447,7 +447,7 @@ const CarRentalsTable = () => {
                   pageNumber === currentPage + 2
                 ) {
                   return (
-                    <span key={i} className="text-gray-600 text-sm">
+                    <span key={i} className="text-sm text-gray-600">
                       ...
                     </span>
                   );

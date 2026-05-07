@@ -16,10 +16,10 @@ const layout = ({ children }) => {
               flex-1 p-4 overflow-y-auto transition-all duration-300
               bg-[radial-gradient(circle_at_20%_30%,_#0f0c29,_#1a1638,_#0a081c)]
               bg-fixed text-white
-              md:p-2
+              md:p-1
             "
           >
-            <div className="p-2 transition-all duration-300 rounded-xl md:p-6">
+            <div className="p-1 transition-all duration-300 rounded-xl md:p-6">
               {children}
             </div>
           </main>

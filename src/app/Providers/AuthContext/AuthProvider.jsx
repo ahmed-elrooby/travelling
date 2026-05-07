@@ -186,7 +186,7 @@ profileQuery.invalidateQueries(["profile"])
       Cookies.set("accessToken", accessToken);
 
       const role = data?.data?.user?.role;
-
+Cookies.set("role", role);
       if (role === "admin") {
         router.push("/Admin");
       } else if (role === "b2c") {
@@ -231,6 +231,7 @@ const handleLogoutMutation = useMutation({
   onSuccess:(data)=>{
     toast.success(data?.message || "تم تسجيل الخروج بنجاح");
     Cookies.remove("accessToken");
+    Cookies.remove("role");
     router.push("/");
   },onError:(err)=>{
     toast.error(err?.response?.data?.message || "فشل تسجيل الخروج")
