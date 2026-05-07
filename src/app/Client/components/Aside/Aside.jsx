@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { 
@@ -21,8 +21,10 @@ import {
 } from "react-icons/fa";
 import { GiCommercialAirplane } from "react-icons/gi";
 import { FiMenu, FiX } from "react-icons/fi";
+import { Auth } from "@/app/Providers/AuthContext/AuthProvider";
 
 const Aside = () => {
+  const {profile,handleLogoutFun}=useContext(Auth)
   const pathname = usePathname();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -86,39 +88,10 @@ const Aside = () => {
           icon: FaUserCircle,
           badge: null,
         },
-        {
-          name: "نقاط الولاء",
-          href: "/dashboard/loyalty",
-          icon: FaGem,
-          badge: "1,250",
-          badgeColor: "purple",
-        },
-        {
-          name: "المفضلة",
-          href: "/dashboard/favorites",
-          icon: FaHeart,
-          badge: "12",
-          badgeColor: "pink",
-        }
+       
       ],
     },
-    {
-      section: "الدعم",
-      items: [
-        {
-          name: "مركز المساعدة",
-          href: "/dashboard/help",
-          icon: FaHeadset,
-          badge: null,
-        },
-        {
-          name: "الأسئلة الشائعة",
-          href: "/dashboard/faq",
-          icon: FaQuestionCircle,
-          badge: null,
-        }
-      ],
-    },
+   
   ];
 
   const getBadgeColor = (color) => {
@@ -253,17 +226,17 @@ const Aside = () => {
           <div className="flex items-center gap-3">
             <div className="relative">
               <img
-                src="https://ui-avatars.com/api/?background=8b5cf6&color=fff&name=Mohamed&size=40&rounded=true&bold=true&length=2"
+                src={`https://ui-avatars.com/api/?background=8b5cf6&color=fff&name=${profile?.name}&size=40&rounded=true&bold=true&length=2`}
                 alt="Client"
                 className="object-cover w-10 h-10 rounded-full ring-2 ring-purple-500"
               />
               <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-gray-900 rounded-full animate-pulse"></div>
             </div>
             <div className="flex-1">
-              <p className="text-sm font-semibold text-white">محمد علي</p>
+              <p className="text-sm font-semibold text-white"> {profile?.name}</p>
               <p className="text-xs text-gray-400">عميل B2C</p>
             </div>
-            <button className="p-2 transition-colors rounded-lg hover:bg-red-500/10 group">
+            <button onClick={handleLogoutFun} className="p-2 transition-colors rounded-lg hover:bg-red-500/10 group">
               <FaSignOutAlt className="w-4 h-4 text-gray-500 transition-colors cursor-pointer group-hover:text-purple-400" />
             </button>
           </div>

@@ -1,6 +1,6 @@
 import React from 'react'
-import Header from '../utils/MyHotels/Header'
 import Cards from '../utils/MyHotels/Cards'
+import Header from '../utils/MyHotels/Header'
 
 const Hotels = () => {
   return<>

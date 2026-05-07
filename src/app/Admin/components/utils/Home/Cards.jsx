@@ -20,8 +20,8 @@ const Cards = () => {
   const stats = [
     {
       title: "إجمالي الحجوزات",
-      value: kpis.totalBookings.total,
-      change: kpis.totalBookings.delta,
+      value: kpis?.totalBookings?.total,
+      change: kpis?.totalBookings?.delta,
       icon: FiCalendar,
       gradient: "from-purple-500/20 to-pink-500/20",
       iconColor: "text-purple-400",
@@ -29,8 +29,8 @@ const Cards = () => {
     },
     {
       title: "إجمالي الأرباح",
-      value: kpis.totalProfit.formatted,
-      change: kpis.totalProfit.delta,
+      value: kpis?.totalProfit?.formatted,
+      change: kpis?.totalProfit?.delta,
       icon: FiDollarSign,
       gradient: "from-green-500/20 to-emerald-500/20",
       iconColor: "text-green-400",
@@ -38,8 +38,8 @@ const Cards = () => {
     },
     {
       title: "العملاء B2C",
-      value: kpis.b2cCustomers.total,
-      change: kpis.b2cCustomers.delta,
+      value: kpis?.b2cCustomers?.total,
+      change: kpis?.b2cCustomers?.delta,
       icon: FiUsers,
       gradient: "from-blue-500/20 to-cyan-500/20",
       iconColor: "text-blue-400",
@@ -47,8 +47,8 @@ const Cards = () => {
     },
     {
       title: "الوكلاء B2B",
-      value: kpis.b2bAgencies.total,
-      change: kpis.b2bAgencies.delta,
+      value: kpis?.b2bAgencies?.total,
+      change: kpis?.b2bAgencies?.delta,
       icon: FiBriefcase,
       gradient: "from-yellow-500/20 to-orange-500/20",
       iconColor: "text-yellow-400",
@@ -58,28 +58,12 @@ const Cards = () => {
 
   return (
     <div
-      className="
-        grid gap-4 
-        grid-cols-1 
-        sm:grid-cols-2 
-        lg:grid-cols-4
-        py-8
-      "
+      className="grid grid-cols-1 gap-4 py-8 sm:grid-cols-2 lg:grid-cols-4"
     >
       {stats.map((stat, index) => (
         <div
           key={index}
-          className="
-            relative p-4 sm:p-5 md:p-6 
-            bg-slate-900/60 backdrop-blur-sm 
-            border border-white/5 
-            rounded-2xl 
-            overflow-hidden 
-            transition-all duration-300 
-            hover:-translate-y-1 
-            hover:border-white/10 
-            hover:shadow-xl hover:shadow-purple-500/10
-          "
+          className="relative p-4 overflow-hidden transition-all duration-300 border sm:p-5 md:p-6 bg-slate-900/60 backdrop-blur-sm border-white/5 rounded-2xl hover:-translate-y-1 hover:border-white/10 hover:shadow-xl hover:shadow-purple-500/10"
         >
           {/* Hover BG */}
           <div
@@ -90,11 +74,11 @@ const Cards = () => {
             {/* Top */}
             <div className="flex items-start justify-between">
               <div className="space-y-1">
-                <p className="text-xs sm:text-sm text-gray-400">
+                <p className="text-xs text-gray-400 sm:text-sm">
                   {stat.title}
                 </p>
 
-                <p className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
+                <p className="text-xl font-bold text-white sm:text-2xl md:text-3xl">
                   {stat.value}
                 </p>
 
