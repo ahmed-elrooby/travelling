@@ -235,6 +235,9 @@ const {data:BookingsHotels} = useQuery({
 queryFn:GetBookigsHotels 
 })
 
+
+
+
 const handleAddCarsSection = async (values)=>{
   try {
     setLoadd(true)

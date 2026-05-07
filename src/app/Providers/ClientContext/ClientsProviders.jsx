@@ -44,6 +44,9 @@ const {data:myBooking} = useQuery({
   queryKey:["myBooking"],
   queryFn:getMyBooking
 })
+
+
+
 //flight
 const handleAddFlightBooking = async (values)=>{
   try {
@@ -83,6 +86,9 @@ const handleAddFlight=(values)=>{
   console.log(values)
   handleAddFlightMutation.mutate(values)
 }
+
+
+
 
 const handleGetFlights = async () => {
   try {
@@ -138,6 +144,11 @@ const handleAddHotelFinal = (values)=>{
   console.log(values)
   handleAddHotelMutation.mutate(values)
 }
+
+
+
+
+
 const GetBookigsHotels = async () => {
   try {
     const {data} = await axios.get(`${baseURL}/bookings/hotels`,{
@@ -155,9 +166,72 @@ const {data:BookingsHotels} = useQuery({
   queryKey:["BookingsHotels"],
 queryFn:GetBookigsHotels 
 })
+
+
+
+
+// cars
+const handleAddCarsSection = async (values)=>{
+  try {
+    setLoadd(true)
+    const {data}= await axios.post(`${baseURL}/bookings/cars`,values,{
+      headers:{
+        Authorization:`Bearer ${Cookies.get("accessToken")}`
+      }
+    })
+    return data
+  } catch (error) {
+    throw error
+  }finally{
+    setLoadd(false)
+  }
+}
+
+const [openAddCar,setOpenAddCar]=useState(false)
+const carsQueryClient = useQueryClient()
+const handleAddCarsMutation = useMutation({
+  mutationKey:["addCars"],
+  mutationFn:handleAddCarsSection,
+  onSuccess:(data)=>{
+    toast.success(data?.message)
+    carsQueryClient.invalidateQueries(["Cars","flightSection"]),
+    setOpenAddCar(false)
+  },onError:(err)=>{
+    toast.error(err?.response?.data?.message)
+    console.log(err?.response)
+  }
+
+})
+const handleAddCarFinal = (values)=>{
+  console.log(values)
+  handleAddCarsMutation.mutate(values)
+}
+
+
+
+
+
+const getCarsSection = async()=>{
+  try {
+    const {data}= await axios.get(`${baseURL}/bookings/cars`,{
+      headers:{
+        Authorization:`Bearer ${Cookies.get("accessToken")}`
+      }
+    })
+    return data?.data
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+const {data:carsSection}=useQuery({
+  queryKey:["carsSection"],
+  queryFn:getCarsSection
+})
+
   return (
     <Clients.Provider value={{overview,myBooking,handleAddFlight,openAddFlight,setOpenAddFlight,setLoadd,loadd,
-      flightSection,BookingsHotels,handleAddHotelFinal,openHotels,setOpenHotels
+      flightSection,BookingsHotels,handleAddHotelFinal,openHotels,setOpenHotels,carsSection, handleAddCarFinal, setOpenAddCar, openAddCar
     }}>
       {children}
     </Clients.Provider>

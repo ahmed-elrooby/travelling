@@ -1,8 +1,5 @@
 "use client";
 
-import React, { useState, useEffect, useContext } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { 
   FaHome, 
   FaChevronLeft, 
@@ -22,10 +19,14 @@ import {
   FaHeadset,
   FaTicketAlt
 } from 'react-icons/fa';
+import { Clients } from '@/app/Providers/ClientContext/ClientsProviders';
+import { usePathname } from 'next/navigation';
+import { useContext } from 'react';
+import Link from 'next/link';
+import AddCars from './AddCars';
 
 const Header = () => {
-  const [isDarkMode, setIsDarkMode] = useState(true);
-  const [currentTime, setCurrentTime] = useState('');
+  const {openAddCar,setOpenAddCar} =useContext(Clients);
   const pathname = usePathname();
   
   // Get page title from pathname
@@ -65,7 +66,9 @@ const Header = () => {
   
   return (
     <>
-   
+    {
+  openAddCar && <AddCars/>
+ }
       <div className="relative mb-8">
         {/* Animated Background Effect */}
         <div className="absolute inset-0 overflow-hidden rounded-2xl">
@@ -122,9 +125,9 @@ const Header = () => {
          
             
             {/* Add Booking Button - Always visible with multiple styles */}
-            <button 
+            <button onClick={()=>setOpenAddCar(true)}
+            className="relative overflow-hidden transition-all duration-300 bg-gradient-to-br from-[#8b5cf6] to-[#ec4899] text-white px-5 py-2.5 rounded-xl flex items-center gap-2"
           
-              className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white transition-all duration-300 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 hover:scale-105 shadow-lg shadow-purple-500/25 group"
             >
               <FaPlus className="text-sm transition-transform duration-300 group-hover:rotate-90" />
               <span className="hidden sm:inline">حجز جديد</span>
