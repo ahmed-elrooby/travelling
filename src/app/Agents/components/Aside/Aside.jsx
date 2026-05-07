@@ -27,7 +27,7 @@ const Aside = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const {handleLogoutFun,profile}=useContext(Auth)
- const {BookingsHotels,flightSection}=useContext(Agent)
+ const {BookingsHotels,flightSection,carsSection}=useContext(Agent)
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -82,7 +82,7 @@ const Aside = () => {
           name: "السيارات والتأجير",
           href: "/Agents/CarsPage",
           icon: FaCar,
-          badge: "52",
+          badge: carsSection?.length || 0,
           badgeColor: "blue",
         }
       ],
