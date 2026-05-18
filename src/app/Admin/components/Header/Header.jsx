@@ -34,7 +34,7 @@ const Header = () => {
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 mb-3 text-sm">
           <FaHome className="text-purple-400 transition-colors hover:text-purple-300" />
-          <Link href="/" className="text-gray-400 transition-colors hover:text-gray-300">
+          <Link href="/Admin" className="text-gray-400 transition-colors hover:text-gray-300">
             الرئيسية
           </Link>
           <FaChevronLeft className="text-xs text-gray-500" />
@@ -79,7 +79,7 @@ const Header = () => {
           </button>
 
           {openUser && (
-            <div className="absolute z-50 w-64 mt-3 overflow-hidden bg-gray-800 border border-gray-700 shadow-2xl right-7 md:left-0 rounded-2xl animate-slideDown">
+            <div className="absolute z-50 w-64 mt-3 overflow-hidden bg-gray-800 border border-gray-700 shadow-2xl right-7 md:-right-[88px] rounded-2xl animate-slideDown">
               <div className="p-4 text-center bg-gradient-to-r from-purple-600 to-pink-600">
                 <div className="flex items-center justify-center w-16 h-16 mx-auto mb-2 rounded-full bg-white/20">
                   <FaUserCircle className="text-4xl text-white" />

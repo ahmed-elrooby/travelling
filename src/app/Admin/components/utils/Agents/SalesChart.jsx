@@ -10,6 +10,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
+  Cell,
 } from "recharts";
 
 const COLORS = ["#8b5cf6", "#ec4899", "#3b82f6", "#10b981"];

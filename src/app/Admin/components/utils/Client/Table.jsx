@@ -34,8 +34,8 @@ const Table = () => {
   const inactiveCount = b2cUsers.filter(u => u.status !== "active").length;
 
   return (
-    <div className="min-h-screen p-4 md:p-6 lg:p-8 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900" >
-      <div className="mx-auto max-w-7xl">
+    <div className="min-h-screen p-2 md:p-6 lg:p-8 " >
+      <div className="mx-auto ">
         
         {/* بطاقات الإحصائيات */}
         <div className="grid grid-cols-1 gap-4 mb-8 sm:grid-cols-3">

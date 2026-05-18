@@ -42,7 +42,7 @@ export default function CustomersCharts() {
       {/* 📈 Growth Chart */}
       <div
         data-aos="fade-right"
-        className="p-6 border rounded-2xl bg-white/5 backdrop-blur-md border-white/10"
+        className="p-2 border md:p-6 rounded-2xl bg-white/5 backdrop-blur-md border-white/10"
       >
         <h3 className="flex items-center gap-2 mb-4 text-lg font-bold text-white">
           <span className="text-blue-400">📈</span>

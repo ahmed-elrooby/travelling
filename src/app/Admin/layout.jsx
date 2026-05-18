@@ -18,10 +18,10 @@ const layout = ({ children }) => {
 
             <main
               className={`
-                flex-1 p-4 overflow-y-auto transition-all duration-300
+                flex-1 p-1 overflow-y-auto transition-all duration-300
                           bg-gradient-to-b from-gray-900 via-gray-900 to-gray-800
  text-gray-800
-                md:p-1
+                md:p-4
               `}
             >
               <div
